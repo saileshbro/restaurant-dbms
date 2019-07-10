@@ -124,9 +124,7 @@ values(33, 'Veg Momo', 150, 2 );
 insert into food_item
     (food_item_id,name,price,food_category_id)
 values(34, 'C Momo', 220, 2 );
-insert into food_item
-    (food_item_id,name,price,food_category_id)
-values(35, 'Jhol Momo', 200, 2 );
+
 insert into food_item
     (food_item_id,name,price,food_category_id)
 values(35, 'Chips', 100, 2 );
@@ -391,3 +389,6 @@ values( 119, 'Profiteroles', 210, 7);
 insert into food_item
     (food_item_id,name,price,food_category_id)
 values( 120, 'Curd and Pavlova', 250, 7);
+insert into food_item
+    (food_item_id,name,price,food_category_id)
+values(121, 'Jhol Momo', 200, 2 );

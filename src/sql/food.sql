@@ -169,4 +169,3 @@ insert into food_item(food_item_id,name,price,food_category_id) values( 120,'Cur
 
 
 
-drop database kitchen;

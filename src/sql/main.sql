@@ -1,134 +1,125 @@
-CREATE TABLE food_category(
-    food_category_id int(12) not null AUTO_INCREMENT,
-    food_category_name varchar (100) UNIQUE,
-    primary key (food_category_id)
+CREATE TABLE IF NOT EXISTS contact_info(
+    contact_info_id INT(11) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    address VARCHAR(150) NOT NULL,
+    email VARCHAR(150),
+    phone VARCHAR(30) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS food_category(
+    food_category_id INT(12) NOT NULL,
+    food_category_name VARCHAR (100),
+    PRIMARY KEY (food_category_id,food_category_name)
 );
 
-CREATE TABLE food_item(
-    food_item_id int(10) not null AUTO_INCREMENT,
-    name varchar (100) UNIQUE,
-    price int (10),
-    food_category_id int (10),
-    primary key (food_item_id),
+CREATE TABLE IF NOT EXISTS food_item(
+    food_item_name VARCHAR (100) PRIMARY KEY,
+    food_item_price INT (10),
+    food_category_id INT (10),
     FOREIGN KEY (food_category_id) REFERENCES food_category(food_category_id) ON DELETE CASCADE
 );
 
-CREATE TABLE menu(
-    menu_id int(11) not null AUTO_INCREMENT,
-    start_date date,
-    end_date date,
-    is_active bit,
-    primary key (menu_id)
-);
-CREATE TABLE menu_content(
-    menu_id int(11) not null AUTO_INCREMENT,
-    food_item_id int(10),
-    is_available bit,
-    FOREIGN KEY (food_item_id) REFERENCES food_item(food_item_id) ON DELETE CASCADE,
-    FOREIGN KEY(menu_id) REFERENCES menu(menu_id)
-);
-CREATE TABLE if not exists customer(
-    customer_id int(11) primary key,
-    name varchar(100)
-);
-CREATE TABLE if not EXISTS contact_info(
-    contact_info_id int(11) PRIMARY key,
-    address varchar(150),
-    resturant_id int(11) DEFAULT 0,
-    import_company_id int(11) DEFAULT 0,
-    staff_id int(11) DEFAULT 0,
-    customer_id int(11) DEFAULT 0,
-    email varchar(150),
-    phone varchar(30),
-    foreign key (resturant_id) references restaurant(resturant_id) on DELETE CASCADE,
-    foreign key (import_company_id) references import_company(import_company_id) on DELETE CASCADE,
-    foreign key (staff_id) references staff(staff_id) ON DELETE CASCADE,
-    FOREIGN KEY (customer_id) references customer(customer_id) ON DELETE CASCADE
-);
-CREATE TABLE if not exists manager(
-    username varchar(50) primary key,
-    password varchar(255),
-    name varchar(100));
-
-CREATE TABLE if not exists staff_category(
-	staff_category_id int(11) PRIMARY key AUTO_INCREMENT,
-    category varchar(100) UNIQUE,
-    salary double(10,2)  
+CREATE TABLE IF NOT EXISTS menu(
+    menu_name VARCHAR(100),
+    menu_start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
+    menu_end_date TIMESTAMP,
+    is_menu_active BIT DEFAULT 1,
+    PRIMARY KEY (menu_name,menu_start_date)
 );
 
-CREATE TABLE IF not EXISTS import_company(
-	import_company_id int(11) PRIMARY key AUTO_INCREMENT,
-    name varchar(128),
-    contact_info_id int(11),
-    total_transaction double(10,2),
-    remain_transaction double(10,2),
-    purchase_type varchar(128),
-    FOREIGN KEY contact_info_id()
+CREATE TABLE IF NOT EXISTS menu_content(
+    menu_name VARCHAR(100),
+    food_item_name VARCHAR(100),
+    is_food_available BIT DEFAULT 1,
+    FOREIGN KEY (food_item_name) REFERENCES food_item(food_item_name) ON DELETE CASCADE,
+    FOREIGN KEY (menu_name) REFERENCES menu(menu_name) ON DELETE CASCADE
 );
-Create TABLE IF not exists restaurant(
-    resturant_id int(11) PRIMARY key AUTO_INCREMENT,
-    name varchar(255),
-    total_staff int(11),
-    capacity int(11),
-    total_tables int(11)   
+CREATE TABLE IF NOT EXISTS customer(
+    customer_id INT(11) PRIMARY KEY,
+    foreign KEY (customer_id) REFERENCES contact_info(contact_info_id)
 );
-CREATE TABLE if not EXISTS staff(
-   staff_id int(11) PRIMARY key AUTO_INCREMENT,
-    name varchar(150),
-    staff_category_id int(11),
-    last_paid_date date,
-    joined_date date,
-    FOREIGN key (staff_category_id) references staff_cat(staff_category_id) on DELETE CASCADE);
+CREATE TABLE IF NOT EXISTS manager(
+    username VARCHAR(50),
+    password VARCHAR(255),
+    name VARCHAR(100),
+    PRIMARY KEY (username,name)
+);
 
-CREATE TABLE if not EXISTS restaurant_table(
-    table_id int(11) PRIMARY key AUTO_INCREMENT,
-    is_empty bit,
-    date_time Date,
-    table_no int(11));
+CREATE TABLE IF NOT EXISTS staff_category(
+    staff_category VARCHAR(100) PRIMARY KEY,
+    salary double(10,2)
+);
+CREATE TABLE IF NOT EXISTS staff(
+    staff_category VARCHAR(100),
+    last_paid_date TIMESTAMP,
+    staff_id INT(11) PRIMARY KEY,
+    joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
+    FOREIGN KEY (staff_id) REFERENCES contact_info(contact_info_id),
+    FOREIGN KEY (staff_category) REFERENCES staff_category(staff_category) ON DELETE CASCADE);
 
-CREATE TABLE if not exists import(
-    import_id int(11) primary key AUTO_INCREMENT,
-    import_company_id int(11),
-    good varchar(255),
-    bill_no int(11),
-    quantiy varchar(80),
+CREATE TABLE IF NOT EXISTS import_company(
+    import_company_id INT(11) PRIMARY KEY,
+    total_transaction double(10,2) DEFAULT 0,
+    remain_transaction double(10,2) DEFAULT 0,
+    purchase_type VARCHAR(128),
+    FOREIGN KEY (import_company_id) REFERENCES contact_info(contact_info_id)
+);
+
+Create TABLE IF NOT EXISTS restaurant(
+    restaurant_id INT(11) PRIMARY KEY,
+    total_staff INT(11),
+    capacity INT(11),
+    total_tables INT(11),
+    foreign KEY (restaurant_id) REFERENCES contact_info(contact_info_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS restaurant_table(
+    table_no INT(11) PRIMARY KEY,
+    is_empty BIT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS import(
+    import_company_id INT(11),
+    import_good VARCHAR(255),
+    bill_no INT(11),
+    quantiy VARCHAR(80),
     total_price double(10,2),
-    import_date date,
-    FOREIGN key (import_company_id) references import_company(import_company_id)
+    import_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
+    PRIMARY KEY (bill_no,import_date),
+    FOREIGN KEY (import_company_id) REFERENCES import_company(import_company_id)
 );
 
-CREATE TABLE if not exists stock(
-	stock_id int(11) PRIMARY key AUTO_INCREMENT,
-	type_of_stock varchar(80),
-    name varchar(120),
-    import_id int(11),
-    quantity varchar(80),
-    FOREIGN key (import_id) REFERENCES import(import_id)
+CREATE TABLE IF NOT EXISTS stock(
+    name VARCHAR(120) PRIMARY KEY,
+	type_of_stock VARCHAR(80),
+    import_date TIMESTAMP,
+    quantity VARCHAR(80),
+    FOREIGN KEY (import_date) REFERENCES import(import_date)
 );
-CREATE TABLE if not exists bill(
-	bill_id int(11) primary key AUTO_INCREMENT,
-	order_id int(11),
-    reservation_id int(11) DEFAULT 0,
+CREATE TABLE IF NOT EXISTS reservation(
+    customer_id INT(11),
+    table_no INT(11),
+    number_of_person INT(2),
+    reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
+    PRIMARY KEY (customer_id,reservation_date),
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
+    FOREIGN KEY (table_no) REFERENCES restaurant_table(table_no)
+);
+CREATE TABLE IF NOT EXISTS bill(
+	bill_no INT(11) PRIMARY KEY,
+	order_id INT(11),
 	total_price double(10,2),
-    FOREIGN KEY reservation_id REFERENCES reservation(reservation_id)
+    issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE
     );
 
 CREATE TABLE IF NOT EXISTS home_delivery(
-    home_delivery_id int(11) PRIMARY KEY AUTO_INCREMENT,
-    customer_id int(11),
-    staff_id int(11),
-    bill_id int(11),
-    issue_date date,
-    FOREIGN KEY customer_id REFERENCES customer(customer_id),
-    FOREIGN KEY staff_id REFERENCES staff(staff_id),
-    FOREIGN KEY bill_id REFERENCES bill(bill_id)
-);
-CREATE TABLE IF NOT EXISTS reservation(
-    reservation_id int(11) PRIMARY KEY AUTO_INCREMENT,
-    customer_id int(11),
-    table_id int(11),
-    number_of_person int(2),
-    reservation_date date,
-    FOREIGN KEY customer_id REFERENCES customer(customer_id),
-    FOREIGN KEY table_id REFERENCES restaurant_table(table_id)
+    customer_id INT(11),
+    staff_id INT(11),
+    bill_no INT(11),
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
+    is_delivered BIT DEFAULT 0,
+    PRIMARY KEY (customer_id,order_date),
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id),
+    FOREIGN KEY (bill_no) REFERENCES bill(bill_no)
 );

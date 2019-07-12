@@ -10,7 +10,6 @@ app.use(
   })
 );
 const port = process.env.PORT || 3000;
-app.use("/api", require("./routes/food"));
 app.use("/order", require("./routes/order"));
 app.listen(port, () => {
   console.log(`Server listening at post ${port}`);

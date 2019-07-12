@@ -150,7 +150,8 @@ CREATE TABLE food_order
     AUTO_INCREMENT NOT NULL,
     order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
     PRIMARY KEY
-    (order_id,order_time)
+    (order_id,order_time),
+    
 );
 
 CREATE TABLE order_item

@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS home_delivery(
     customer_id INT(11),
     delivery_staff_id INT(11),
     bill_no INT(11),
+    order_id INT(11),
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
     is_delivered BIT DEFAULT 0,
     PRIMARY KEY (order_date),

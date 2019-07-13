@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users(
 );
 CREATE TABLE IF NOT EXISTS contact_info
 (
-    contact_info_id INTEGER(10) PRIMARY KEY,
+    contact_info_id VARCHAR(100) PRIMARY KEY,
     name VARCHAR (100) NOT NULL,
     address VARCHAR (150) NOT NULL,
     email VARCHAR(150),
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS menu_content
 );
 CREATE TABLE IF NOT EXISTS customer(
     user_id VARCHAR(100) PRIMARY KEY,
-    contact_info_id INTEGER(10),
+    contact_info_id VARCHAR(100),
     foreign KEY (contact_info_id) REFERENCES contact_info(contact_info_id),
     foreign KEY (user_id) REFERENCES users(user_id)
 );
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS staff(
     staff_id VARCHAR(100) PRIMARY KEY,
     staff_category VARCHAR(100),
     last_paid_date TIMESTAMP,
-    contact_info_id INTEGER(10),
+    contact_info_id VARCHAR(100),
     joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
     FOREIGN KEY (contact_info_id) REFERENCES contact_info(contact_info_id),
     FOREIGN KEY (staff_id) REFERENCES users(user_id),
@@ -68,16 +68,16 @@ CREATE TABLE IF NOT EXISTS staff(
 
 CREATE TABLE IF NOT EXISTS import_company
 (
-    import_company_id INTEGER(10) PRIMARY KEY,
-    total_transactions double(10,2) DEFAULT 0,
-    remain_transactions double(10,2) DEFAULT 0,
+    import_company_id VARCHAR(100) PRIMARY KEY,
+    total_transactions double(10,2) DEFAULT 0.0,
+    remain_transactions double(10,2) DEFAULT 0.0,
     purchase_type VARCHAR(128),
     FOREIGN KEY(import_company_id) REFERENCES contact_info(contact_info_id)
 );
 
 CREATE TABLE IF NOT EXISTS restaurant
 (
-    restaurant_id INTEGER(10) PRIMARY KEY,
+    restaurant_id VARCHAR(100) PRIMARY KEY,
     total_staff INTEGER(10),
     capacity INTEGER(10),
     total_tables INTEGER(10),
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS restaurant_table(
 );
 
 CREATE TABLE IF NOT EXISTS import(
-    import_company_id INTEGER(10),
+    import_company_id VARCHAR(100),
     bill_no INTEGER(10),
     total_price double(10,2),
     import_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,

@@ -1,17 +1,17 @@
 const pool = require('../database/database');
-
+const { generateId } = require('../functions/id');
 module.exports.addImportCompany = async (req, res) => {
     const { name, address, email, phone, total_transaction, remain_transaction, purchase_type } = req.body;
-
+    const contact_info_id = generateId("COMP");
     if (!purchase_type || purchase_type.length == 0) {
         return res.status(422).send({
             error: "Purchase type made from the company must be provided."
         })
     }
     try {
-        const insertContact = await pool.query("INSERT INTO contact_info SET name=?,email=?,phone=?,address=?", [name, email, phone, address]);
+        const insertContact = await pool.query("INSERT INTO contact_info SET name=?,email=?,phone=?,address=?,contact_info_id=?", [name, email, phone, address, contact_info_id]);
         if (insertContact.affectedRows == 1) {
-            const insertCompany = await pool.query("INSERT INTO import_comapny SET total_transaction=?,remaining_transaction=?,purchase_type=?, import_company_id=?", [total_transaction, remain_transaction, purchase_type, insertContact.insertId]);
+            const insertCompany = await pool.query("INSERT INTO import_company SET total_transactions=?,remain_transactions=?,purchase_type=?, import_company_id=?", [total_transaction, remain_transaction, purchase_type, contact_info_id]);
             if (insertCompany.affectedRows == 1) {
                 return res.send({ message: "Import company successfully added." });
 
@@ -31,7 +31,7 @@ module.exports.addImportCompany = async (req, res) => {
                 error: "Company with given credentials already exists."
             })
         } else {
-            return res.status(500).send({ error: "Internal server error." });
+            return res.status(500).send({ error });
         }
 
     }
@@ -40,14 +40,13 @@ module.exports.addImportCompany = async (req, res) => {
 
 module.exports.getImportCompanies = async (req, res) => {
     try {
-        const results = await pool.query(`SELECT name,phone,email,address,total_transactions,partial_transactions,purchase_type FROM import_company INNER JOIN contact_info ON import_company.import_company_id= contact_info.contact_info_id ORDER BY name`);
+        const results = await pool.query(`SELECT name,phone,email,address,total_transactions,remain_transactions,purchase_type FROM import_company INNER JOIN contact_info ON import_company.import_company_id= contact_info.contact_info_id ORDER BY name`);
         if (!results) {
             return res.status(404).json({ error: "Unexpected error occured." });
-
         }
         return res.send({ import_companies: results });
     } catch (error) {
-        return res.send({ error: "Internal Server Error" });
+        return res.send({ error: "Internal Server error." });
     }
 };
 

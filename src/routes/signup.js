@@ -14,4 +14,16 @@ router.post(
   contactValidator,
   signupController.createManager
 );
+router.post(
+  "/signup/kitchen",
+  credentialsValidator,
+  contactValidator,
+  signupController.createKitchen
+);
+router.post(
+  "/signup/waiter",
+  credentialsValidator,
+  contactValidator,
+  signupController.createWaiter
+);
 module.exports = router;

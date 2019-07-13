@@ -1,10 +1,3 @@
-CREATE TABLE IF NOT EXISTS users(
-    user_id VARCHAR(100),
-    username VARCHAR(50),
-    password VARCHAR(255),
-    PRIMARY KEY(user_id,username), 
-    FOREIGN KEY (user_id) references contact_info(contact_info_id)
-);
 CREATE TABLE IF NOT EXISTS contact_info
 (
     contact_info_id VARCHAR(100) PRIMARY KEY,
@@ -12,6 +5,13 @@ CREATE TABLE IF NOT EXISTS contact_info
     address VARCHAR (150) NOT NULL,
     email VARCHAR(150),
     phone VARCHAR(30) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS users(
+    user_id VARCHAR(100),
+    username VARCHAR(50),
+    password VARCHAR(255),
+    PRIMARY KEY(user_id,username), 
+    FOREIGN KEY (user_id) references contact_info(contact_info_id)
 );
 CREATE TABLE IF NOT EXISTS food_category
 (

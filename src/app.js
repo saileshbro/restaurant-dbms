@@ -14,9 +14,6 @@ app.use("/api", require("./routes/signup"));
 app.use("/api", require("./routes/import"));
 app.use("/order", require("./routes/order"));
 app.use("/food", require("./routes/food"));
-app.get("/", (req, res) => {
-  res.send("hell");
-});
 app.listen(port, () => {
   console.log(`Server listening at post ${port}`);
 });

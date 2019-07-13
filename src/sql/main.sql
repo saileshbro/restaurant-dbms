@@ -142,45 +142,39 @@ CREATE TABLE IF NOT EXISTS home_delivery(
 );
 
 
-CREATE TABLE food_order
+CREATE TABLE IF NOT EXISTS food_order
 (
-    order_id int(10)
-    AUTO_INCREMENT NOT NULL,
+    order_id varchar(50),
     order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
-    PRIMARY KEY
-    (order_id,order_time),
-    
+    PRIMARY KEY (order_id)
 );
 
-CREATE TABLE order_item
-(
-    order_id int(10),
+CREATE TABLE IF NOT EXISTS order_item(
+    order_id varchar(50),
     food_item_name varchar(100),
     quantity int(3),
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
     FOREIGN KEY (food_item_name) REFERENCES food_item(food_item_name)
 );
 
-CREATE TABLE order_relates_staff
-(
-    order_id int(10),
+CREATE TABLE IF NOT EXISTS order_relates_staff(
+    order_id varchar(50),
     staff_id int (11),
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
-    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
-);
-CREATE TABLE order_relates_table
-(
-    order_id int(10),
-    table_no int (11),
-    FOREIGN KEY (order_id) REFERENCES food_order(order_id),
-    FOREIGN KEY (restaurant_table) REFERENCES restaurant_table(table_no)
+   FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
 
-CREATE TABLE order_relates_home_delivery
-(
-    order_id int(10),
+CREATE TABLE IF NOT EXISTS order_relates_table(
+    order_id varchar(50),
+    table_no int (11),
+    FOREIGN KEY (order_id) REFERENCES food_order(order_id),
+    FOREIGN KEY(table_no) REFERENCES restaurant_table(table_no)
+);
+    
+CREATE TABLE IF NOT EXISTS order_relates_home_delivery(
+    order_id varchar(50),
     customer_id int(11),
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
-    FOREIGN KEY (customer_id,order_date) REFERENCES restaurant_table(customer_id,order_date)
+    FOREIGN KEY (customer_id,order_date) REFERENCES home_delivery(customer_id,order_date)
 );

@@ -219,30 +219,16 @@ module.exports.getImport = async (req, res) => {
 module.exports.getImportsByCompany = async (req, res) => {
     const { import_company_id } = req.params;
     try {
-        const result = await pool.query(`SELECT import_company_id,import.bill_no,total_price,import_date,quantity,price,import_good FROM import INNER JOIN import_detail ON import.bill_no= import_detail.bill_no WHERE import_company_id=? ORDER BY total_price desc`, [import_company_id]);
-        if (!result) {
+        const result1 = await pool.query(`SELECT bill_no,total_price,import_date FROM import WHERE import_company_id=? ORDER BY total_price desc`, [import_company_id]);
+        if (!result1) {
             return res.status(404).json({ error: "Couldn't get import associated with the import Company." });
         }
-        if (result.length > 0) {
-            const import_company_id = result[0].import_company_id;
-            const bill_no = result[0].bill_no;
-            const total_price = result[0].total_price;
-            const import_date = result[0].import_date;
-            result.forEach(rslt => {
-                delete rslt.import_company_id;
-                delete rslt.bill_no;
-                delete rslt.total_price;
-                delete rslt.import_date;
-            });
-            return res.send({
-                import_company_id,
-                import_info: {
-                    bill_no,
-                    total_price,
-                    import_date,
-                    import_details: result
-                },
-            });
+        if (result1.length > 0) {
+            for (let i = 0; i < result1.length; i++) {
+                const detail = await pool.query('SELECT quantity,price,import_good FROM import_detail WHERE bill_no=?', [result1[i].bill_no]);
+                result1[i].import_detail = detail;
+            }
+            return res.send({ import_company_id, imports: result1 });
         }
         return res.send({ error: "No data found" });
     } catch (error) {

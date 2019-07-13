@@ -46,7 +46,7 @@ module.exports.getImportCompanies = async (req, res) => {
     try {
         const results = await pool.query(`SELECT import_company_id,name,phone,email,address,total_transactions,remain_transactions,purchase_type FROM import_company INNER JOIN contact_info ON import_company.import_company_id= contact_info.contact_info_id ORDER BY name`);
         if (!results) {
-            return res.status(404).json({ error: "Unexpected error occured." });
+            return res.status(404).json({ error: "Unable to get Companies." });
         }
         return res.send({ import_companies: results });
     } catch (error) {
@@ -57,11 +57,11 @@ module.exports.getImportCompanies = async (req, res) => {
 module.exports.getImportCompany = async (req, res) => {
     const { import_company_id } = req.params;
     try {
-        const results = await pool.query(`SELECT import_company_id,name,phone,email,address,total_transactions,remain_transactions,purchase_type FROM import_company INNER JOIN contact_info ON import_company.import_company_id= contact_info.contact_info_id where import_company_id=? ORDER BY name`, [import_company_id]);
-        if (!results) {
+        const result = await pool.query(`SELECT import_company_id,name,phone,email,address,total_transactions,remain_transactions,purchase_type FROM import_company INNER JOIN contact_info ON import_company.import_company_id= contact_info.contact_info_id where import_company_id=? ORDER BY name`, [import_company_id]);
+        if (!result) {
             return res.status(404).json({ error: "Couldn't get Company." });
         }
-        return res.send({ import_companies: results });
+        return res.send(result);
     } catch (error) {
         return res.send({ error: "Internal Server error." });
     }
@@ -171,3 +171,82 @@ module.exports.addImport = async (req, res) => {
 
     }
 };
+
+module.exports.getImports = async (req, res) => {
+    try {
+        const results = await pool.query(`SELECT import_company_id,import.bill_no,total_price,import_date FROM import ORDER BY total_price desc`);
+        if (!results) {
+            return res.status(404).json({ error: "Unable to get Imports" });
+        }
+        return res.send({ imports: results });
+    } catch (error) {
+        return res.send({ error });
+    }
+};
+
+module.exports.getImport = async (req, res) => {
+    const { bill_no } = req.params;
+    try {
+        const result = await pool.query(`SELECT import_company_id,import.bill_no,total_price,import_date,quantity,price,import_good FROM import INNER JOIN import_detail ON import.bill_no= import_detail.bill_no WHERE import.bill_no=? ORDER BY total_price desc`, [bill_no]);
+        if (!result) {
+            return res.status(404).json({ error: "Couldn't get import associated with the bill." });
+        }
+        if (result.length > 0) {
+            const import_company_id = result[0].import_company_id;
+            const bill_no = result[0].bill_no;
+            const total_price = result[0].total_price;
+            const import_date = result[0].import_date;
+            result.forEach(rslt => {
+                delete rslt.import_company_id;
+                delete rslt.bill_no;
+                delete rslt.total_price;
+                delete rslt.import_date;
+            });
+            return res.send({
+                import_company_id,
+                bill_no,
+                total_price,
+                import_date,
+                import_details: result
+            });
+        }
+        return res.send(result);
+    } catch (error) {
+        return res.send({ error });
+    }
+};
+
+module.exports.getImportsByCompany = async (req, res) => {
+    const { import_company_id } = req.params;
+    try {
+        const result = await pool.query(`SELECT import_company_id,import.bill_no,total_price,import_date,quantity,price,import_good FROM import INNER JOIN import_detail ON import.bill_no= import_detail.bill_no WHERE import_company_id=? ORDER BY total_price desc`, [import_company_id]);
+        if (!result) {
+            return res.status(404).json({ error: "Couldn't get import associated with the import Company." });
+        }
+        if (result.length > 0) {
+            const import_company_id = result[0].import_company_id;
+            const bill_no = result[0].bill_no;
+            const total_price = result[0].total_price;
+            const import_date = result[0].import_date;
+            result.forEach(rslt => {
+                delete rslt.import_company_id;
+                delete rslt.bill_no;
+                delete rslt.total_price;
+                delete rslt.import_date;
+            });
+            return res.send({
+                import_company_id,
+                import_info: {
+                    bill_no,
+                    total_price,
+                    import_date,
+                    import_details: result
+                },
+            });
+        }
+        return res.send({ error: "No data found" });
+    } catch (error) {
+        return res.send({ error });
+    }
+};
+

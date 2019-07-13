@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS import_detail(
     bill_no INTEGER(10),
     quantity VARCHAR(80),
     price double(10,2),
-    FOREIGN KEY (bill_no) REFERENCES import(bill_no)
+    FOREIGN KEY (bill_no) REFERENCES import(bill_no) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS stock(

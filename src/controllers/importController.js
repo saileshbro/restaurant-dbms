@@ -236,3 +236,25 @@ module.exports.getImportsByCompany = async (req, res) => {
     }
 };
 
+module.exports.deleteImport = async (req, res) => {
+    const { bill_no } = req.params;
+    try {
+        await pool.query("SET FOREIGN_KEY_CHECKS=0");
+        const ImportDeleteresult = await pool.query(
+            "DELETE FROM import WHERE bill_no=?",
+            [bill_no]
+
+        );
+        await pool.query("SET FOREIGN_KEY_CHECKS=1");
+        if (ImportDeleteresult.affectedRows == 1) {
+
+            return res.send({ message: " Import Successfully deleted." });
+
+        } else {
+            return res.status(400).send({ error: "Unable to delete import." });
+        }
+
+    } catch (error) {
+        return res.status(500).send({ error });
+    }
+};

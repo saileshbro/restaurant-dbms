@@ -11,4 +11,5 @@ router.get('/import/import/:bill_no', importController.getImport);
 router.get('/import/:import_company_id/imports', importController.getImportsByCompany);
 router.patch('/import/updatecompany/:import_company_id', contactValidator, importController.updateImportCompany);
 router.delete('/import/deletecompany/:import_company_id', importController.deleteImportCompany);
+router.delete('/import/deleteimport/:bill_no', importController.deleteImport);
 module.exports = router;

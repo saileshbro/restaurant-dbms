@@ -69,8 +69,8 @@ CREATE TABLE IF NOT EXISTS staff(
 CREATE TABLE IF NOT EXISTS import_company
 (
     import_company_id INT(11) PRIMARY KEY,
-    total_transaction double(10,2) DEFAULT 0,
-    remain_transaction double(10,2) DEFAULT 0,
+    total_transactions double(10,2) DEFAULT 0,
+    remain_transactions double(10,2) DEFAULT 0,
     purchase_type VARCHAR(128),
     FOREIGN KEY(import_company_id) REFERENCES contact_info(contact_info_id)
 );
@@ -178,6 +178,7 @@ CREATE TABLE order_relates_table
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
     FOREIGN KEY (restaurant_table) REFERENCES restaurant_table(table_no)
 );
+
 CREATE TABLE order_relates_home_delivery
 (
     order_id int(10),

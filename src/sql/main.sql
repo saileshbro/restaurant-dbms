@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS users(
     user_id VARCHAR(100),
     username VARCHAR(50),
     password VARCHAR(255),
-    PRIMARY KEY(user_id,username)
+    PRIMARY KEY(user_id,username), 
+    FOREIGN KEY (user_id) references contact_info(contact_info_id)
 );
 CREATE TABLE IF NOT EXISTS contact_info
 (
@@ -45,10 +46,8 @@ CREATE TABLE IF NOT EXISTS menu_content
     FOREIGN KEY (menu_name) REFERENCES menu(menu_name) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS customer(
-    user_id VARCHAR(100) PRIMARY KEY,
-    contact_info_id VARCHAR(100),
-    foreign KEY (contact_info_id) REFERENCES contact_info(contact_info_id),
-    foreign KEY (user_id) REFERENCES users(user_id)
+    customer_id VARCHAR(100) PRIMARY KEY,
+    foreign KEY (customer_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS staff_category
@@ -60,9 +59,7 @@ CREATE TABLE IF NOT EXISTS staff(
     staff_id VARCHAR(100) PRIMARY KEY,
     staff_category VARCHAR(100),
     last_paid_date TIMESTAMP,
-    contact_info_id VARCHAR(100),
     joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
-    FOREIGN KEY (contact_info_id) REFERENCES contact_info(contact_info_id),
     FOREIGN KEY (staff_id) REFERENCES users(user_id),
     FOREIGN KEY (staff_category) REFERENCES staff_category(staff_category) ON DELETE CASCADE);
 
@@ -121,7 +118,7 @@ CREATE TABLE IF NOT EXISTS reservation
     number_of_person INTEGER(2),
     reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
     PRIMARY KEY (reservation_date),
-    FOREIGN KEY (customer_id) REFERENCES customer(user_id),
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
     FOREIGN KEY (table_no) REFERENCES restaurant_table(table_no)
 );
 CREATE TABLE IF NOT EXISTS bill(

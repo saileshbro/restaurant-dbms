@@ -1,6 +1,7 @@
 const signupController = require("../controllers/signupController");
 const { contactValidator } = require("../middlewares/contactvalidator");
 const { credentialsValidator } = require("../middlewares/credentialvalidator");
+const auth = require("../auth/auth");
 const router = require("express").Router();
 router.post(
   "/signup/customer",
@@ -26,5 +27,5 @@ router.post(
   contactValidator,
   signupController.createWaiter
 );
-router.get("/signup/all", signupController.getAllSignups);
+router.get("/signup/all", auth, signupController.getAllSignups);
 module.exports = router;

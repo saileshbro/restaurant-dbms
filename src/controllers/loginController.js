@@ -42,6 +42,9 @@ exports.loginUser = async (req, res) => {
 };
 exports.restaurantLogin = async (req, res) => {
   const { staff_category, username, password } = req.body;
+  if (!staff_category || staff_category.length == 0) {
+    return res.status(403).send({ error: "Staff category must be provided." });
+  }
   try {
     const result = await pool.query(
       "SELECT user_id,username,password,email,name,address,phone,staff_category FROM users INNER JOIN contact_info ON users.user_id=contact_info.contact_info_id INNER JOIN staff ON users.user_id= staff.staff_id WHERE users.username=? AND staff.staff_category=?",

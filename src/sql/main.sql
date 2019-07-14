@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS menu
     menu_name VARCHAR(100),
     menu_start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
     menu_end_date TIMESTAMP,
-    is_menu_active BIT DEFAULT 1,
+    is_menu_active BOOLEAN DEFAULT 1,
     PRIMARY KEY(menu_name,menu_start_date)
 );
 
@@ -41,13 +41,13 @@ CREATE TABLE IF NOT EXISTS menu_content
 (
     menu_name VARCHAR(100),
     food_item_name VARCHAR(100),
-    is_food_available BIT DEFAULT 1,
+    is_food_available BOOLEAN DEFAULT 1,
     FOREIGN KEY(food_item_name) REFERENCES food_item(food_item_name) ON DELETE CASCADE,
     FOREIGN KEY (menu_name) REFERENCES menu(menu_name) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS customer(
     customer_id VARCHAR(100) PRIMARY KEY,
-    foreign KEY (customer_id) REFERENCES users(user_id)
+    FOREIGN KEY (customer_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS staff_category
@@ -77,13 +77,13 @@ CREATE TABLE IF NOT EXISTS restaurant
     total_staff INTEGER(10),
     capacity INTEGER(10),
     total_tables INTEGER(10),
-    foreign KEY(restaurant_id) REFERENCES contact_info(contact_info_id)  ON DELETE CASCADE
+    FOREIGN KEY(restaurant_id) REFERENCES contact_info(contact_info_id)  ON DELETE CASCADE
 );
 
 
 CREATE TABLE IF NOT EXISTS restaurant_table(
     table_no INTEGER(10) PRIMARY KEY,
-    is_empty BIT DEFAULT 1
+    is_empty BOOLEAN DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS import(
@@ -128,14 +128,14 @@ CREATE TABLE IF NOT EXISTS bill(
 	total_price double(10,2),
     issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE
 );
--- foreign key refer gareko error cha below. Unchanged as per instruction
+-- FOREIGN key refer gareko error cha below. Unchanged as per instruction
 CREATE TABLE IF NOT EXISTS home_delivery(
     customer_id INT(11),
     delivery_staff_id INT(11),
     bill_no INT(11),
     order_id INT(11),
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
-    is_delivered BIT DEFAULT 0,
+    is_delivered BOOLEAN DEFAULT 0,
     PRIMARY KEY (order_date),
     FOREIGN KEY (customer_id) REFERENCES customer(user_id),
     FOREIGN KEY (delivery_staff_id) REFERENCES staff(user_id),

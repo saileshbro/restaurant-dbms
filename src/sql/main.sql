@@ -68,8 +68,7 @@ CREATE TABLE IF NOT EXISTS import_company
     import_company_id VARCHAR(100) PRIMARY KEY,
     total_transactions double(10,2) DEFAULT 0.0,
     remain_transactions double(10,2) DEFAULT 0.0,
-    purchase_type VARCHAR(128),
-    FOREIGN KEY(import_company_id) REFERENCES contact_info(contact_info_id) ON DELETE CASCADE
+    FOREIGN KEY(import_company_id) REFERENCES contact_info(contact_info_id)
 );
 
 CREATE TABLE IF NOT EXISTS restaurant
@@ -97,18 +96,20 @@ CREATE TABLE IF NOT EXISTS import(
 );
 
 CREATE TABLE IF NOT EXISTS import_detail(
-    import_good VARCHAR(200),
+    import_good VARCHAR(200) UNIQUE,
+    import_type VARCHAR(128),
     bill_no INTEGER(10),
-    quantity VARCHAR(80),
+    quantity double(10,2),
     price double(10,2),
     FOREIGN KEY (bill_no) REFERENCES import(bill_no) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS stock(
-    name VARCHAR(120) PRIMARY KEY,
-	type_of_stock VARCHAR(80),
+    stock_name VARCHAR(200) PRIMARY KEY,
+	type_of_stock VARCHAR(120),
     last_import_date TIMESTAMP,
-    quantity VARCHAR(80),
+    quantity double(10,2),
+    FOREIGN KEY (stock_name) REFERENCES import_detail(import_good),
     FOREIGN KEY (last_import_date) REFERENCES import(import_date)
 );
 CREATE TABLE IF NOT EXISTS reservation

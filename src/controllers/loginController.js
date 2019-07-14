@@ -27,6 +27,7 @@ exports.loginUser = async (req, res) => {
         process.env.JWT_SECRET
       );
       return res.send({
+        user_id: result[0].user_id,
         username: result[0].username,
         name: result[0].name,
         email: result[0].email,
@@ -67,6 +68,7 @@ exports.restaurantLogin = async (req, res) => {
         process.env.JWT_SECRET
       );
       return res.send({
+        staff_id: result[0].user_id,
         username: result[0].username,
         name: result[0].name,
         email: result[0].email,

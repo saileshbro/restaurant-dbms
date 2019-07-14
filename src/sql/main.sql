@@ -3,15 +3,15 @@ CREATE TABLE IF NOT EXISTS contact_info
     contact_info_id VARCHAR(100) PRIMARY KEY,
     name VARCHAR (100) NOT NULL,
     address VARCHAR (150) NOT NULL,
-    email VARCHAR(150),
+    email VARCHAR(150) UNIQUE NOT NULL,
     phone VARCHAR(30) NOT NULL
 );
 CREATE TABLE IF NOT EXISTS users(
     user_id VARCHAR(100),
     username VARCHAR(50),
     password VARCHAR(255),
-    PRIMARY KEY(user_id,username), 
-    FOREIGN KEY (user_id) references contact_info(contact_info_id)
+    PRIMARY KEY(user_id,username),
+    FOREIGN KEY (user_id) references contact_info(contact_info_id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS food_category
 (
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS staff(
     staff_category VARCHAR(100),
     last_paid_date TIMESTAMP,
     joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
-    FOREIGN KEY (staff_id) REFERENCES users(user_id),
+    FOREIGN KEY (staff_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (staff_category) REFERENCES staff_category(staff_category) ON DELETE CASCADE);
 
 CREATE TABLE IF NOT EXISTS import_company
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS import_company
     total_transactions double(10,2) DEFAULT 0.0,
     remain_transactions double(10,2) DEFAULT 0.0,
     purchase_type VARCHAR(128),
-    FOREIGN KEY(import_company_id) REFERENCES contact_info(contact_info_id)
+    FOREIGN KEY(import_company_id) REFERENCES contact_info(contact_info_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS restaurant
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS restaurant
     total_staff INTEGER(10),
     capacity INTEGER(10),
     total_tables INTEGER(10),
-    foreign KEY(restaurant_id) REFERENCES contact_info(contact_info_id)
+    foreign KEY(restaurant_id) REFERENCES contact_info(contact_info_id)  ON DELETE CASCADE
 );
 
 

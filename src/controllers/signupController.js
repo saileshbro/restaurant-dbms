@@ -71,11 +71,20 @@ module.exports.createManager = async (req, res) => {
   }
   try {
     const ifExists = await pool.query(
-      "SELECT username,email,staff_category FROM users INNER JOIN contact_info ON users.user_id=contact_info.contact_info_id  INNER JOIN staff ON users.user_id=staff.staff_id WHERE (username=? OR email=?) AND staff_category=?",
+      "SELECT username,email,staff_category FROM users LEFT JOIN contact_info ON users.user_id=contact_info.contact_info_id  LEFT JOIN staff ON users.user_id=staff.staff_id WHERE (username=? OR email=?) OR staff_category=?",
       [username, email, staff_category]
     );
     if (ifExists && ifExists.length > 0) {
       return res.status(403).send({ error: "User already exists" });
+    }
+    const categoryCheck = await pool.query(
+      "SELECT * FROM staff_category WHERE staff_category=?",
+      [staff_category]
+    );
+    if (categoryCheck.length == 0) {
+      return res.send({
+        error: "Provided category doesn't exist. Please add the category"
+      });
     }
     const user_id = generateId("MGR");
     const insertIntoContactInfo = await pool.query(
@@ -146,11 +155,20 @@ exports.createWaiter = async (req, res) => {
   }
   try {
     const ifExists = await pool.query(
-      "SELECT username,email,staff_category FROM users INNER JOIN contact_info ON users.user_id=contact_info.contact_info_id  INNER JOIN staff ON users.user_id=staff.staff_id WHERE (username=? OR email=?) AND staff_category=?",
+      "SELECT username,email,staff_category FROM users LEFT JOIN contact_info ON users.user_id=contact_info.contact_info_id  LEFT JOIN staff ON users.user_id=staff.staff_id WHERE (username=? OR email=?) AND staff_category=?",
       [username, email, staff_category]
     );
     if (ifExists && ifExists.length > 0) {
       return res.status(403).send({ error: "User already exists" });
+    }
+    const categoryCheck = await pool.query(
+      "SELECT * FROM staff_category WHERE staff_category=?",
+      [staff_category]
+    );
+    if (categoryCheck.length == 0) {
+      return res.send({
+        error: "Provided category doesn't exist. Please add the category"
+      });
     }
     const user_id = generateId("WAIT");
     const insertIntoContactInfo = await pool.query(
@@ -221,11 +239,20 @@ exports.createKitchen = async (req, res) => {
   }
   try {
     const ifExists = await pool.query(
-      "SELECT username,email,staff_category FROM users INNER JOIN contact_info ON users.user_id=contact_info.contact_info_id  INNER JOIN staff ON users.user_id=staff.staff_id WHERE (username=? OR email=?) AND staff_category=?",
+      "SELECT username,email,staff_category FROM users LEFT JOIN contact_info ON users.user_id=contact_info.contact_info_id  LEFT JOIN staff ON users.user_id=staff.staff_id WHERE (username=? OR email=?) AND staff_category=?",
       [username, email, staff_category]
     );
     if (ifExists && ifExists.length > 0) {
       return res.status(403).send({ error: "User already exists" });
+    }
+    const categoryCheck = await pool.query(
+      "SELECT * FROM staff_category WHERE staff_category=?",
+      [staff_category]
+    );
+    if (categoryCheck.length == 0) {
+      return res.send({
+        error: "Provided category doesn't exist. Please add the category"
+      });
     }
     const user_id = generateId("CHEF");
     const insertIntoContactInfo = await pool.query(
@@ -277,6 +304,16 @@ exports.createKitchen = async (req, res) => {
     } else {
       return res.status(403).send({ error: "Unable to signup" });
     }
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+};
+exports.getAllSignups = async (req, res) => {
+  try {
+    const results = await pool.query(
+      "SELECT user_id,username,email,name,address,phone,staff_category FROM users LEFT JOIN contact_info ON users.user_id=contact_info.contact_info_id INNER JOIN staff ON staff.staff_id=users.user_id"
+    );
+    return res.send(results);
   } catch (error) {
     return res.status(500).send({ error });
   }

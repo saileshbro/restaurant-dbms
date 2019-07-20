@@ -24,10 +24,11 @@ CREATE TABLE IF NOT EXISTS food_category
 
 CREATE TABLE IF NOT EXISTS food_item
 (
-    food_item_name VARCHAR(100) PRIMARY KEY,
+    food_item_id INT(10),
+    food_item_name VARCHAR(100),
     food_item_price INTEGER(10),
     food_category_id INTEGER(10),
-    PRIMARY KEY(food_item_name, food_category_id)
+    PRIMARY KEY(food_item_id,food_item_name, food_category_id)
     FOREIGN KEY(food_category_id) REFERENCES food_category(food_category_id) ON DELETE CASCADE
 
 );

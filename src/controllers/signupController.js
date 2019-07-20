@@ -2,6 +2,7 @@ const pool = require("../database/database");
 const { generateId } = require("../functions/id");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 module.exports.createCustomer = async (req, res) => {
   const { username, password, name, address, email, phone } = req.body;
   try {

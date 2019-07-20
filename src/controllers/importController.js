@@ -234,7 +234,7 @@ module.exports.getImports = async (req, res) => {
     try {
         const results = await pool.query(
             "SELECT import_company_id,import.bill_no,total_price,import_date FROM import ORDER BY import_date LIMIT ?,20", [
-                parseInt(req.query.page) * 20
+                (parseInt(req.query.page) - 1) * 20
             ]
         );
         if (!results) {
@@ -250,7 +250,7 @@ module.exports.getImport = async (req, res) => {
     const { bill_no } = req.params;
     try {
         const result = await pool.query(
-            `SELECT import_company_id,import.bill_no,total_price,import_date,quantity,price,import_good FROM import INNER JOIN import_detail ON import.bill_no= import_detail.bill_no WHERE import.bill_no=? ORDER BY total_price desc`,
+            `SELECT import_company_id,import.bill_no,total_price,import_date,quantity,price,import_good FROM import INNER JOIN import_detail ON import.bill_no= import_detail.bill_no WHERE import.bill_no=?`,
             [bill_no]
         );
         if (!result) {
@@ -288,7 +288,8 @@ module.exports.getImportsByCompany = async (req, res) => {
     try {
         const result1 = await pool.query(
             "SELECT bill_no,total_price,import_date FROM import WHERE import_company_id=? ORDER BY import_date LIMIT ?,20",
-            [import_company_id, parseInt(req.query.page) * 20]
+            [import_company_id, (parseInt(req.query.page) - 1)
+                * 20]
         );
         if (!result1) {
             return res.status(404).json({

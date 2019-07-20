@@ -2,6 +2,7 @@ const pool = require("../database/database");
 const { generateId } = require("../functions/id");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 module.exports.createCustomer = async (req, res) => {
   const { username, password, name, address, email, phone } = req.body;
   try {
@@ -27,6 +28,7 @@ module.exports.createCustomer = async (req, res) => {
         [user_id, username, hashpw]
       );
       if (insertUser && insertUser.affectedRows == 1) {
+        await pool.query("INSERT INTO customer SET customer_id=?", [user_id]);
         const token = await jwt.sign(
           {
             user_id
@@ -56,7 +58,7 @@ module.exports.createCustomer = async (req, res) => {
   }
 };
 
-module.exports.createManager = async (req, res) => {
+exports.createManager = async (req, res) => {
   const {
     username,
     staff_category,
@@ -311,7 +313,7 @@ exports.createKitchen = async (req, res) => {
 exports.getAllSignups = async (req, res) => {
   try {
     const results = await pool.query(
-      "SELECT user_id,username,email,name,address,phone,staff_category FROM users LEFT JOIN contact_info ON users.user_id=contact_info.contact_info_id INNER JOIN staff ON staff.staff_id=users.user_id"
+      "SELECT * FROM contact_info WHERE contact_info_id IN(SELECT user_id FROM users)"
     );
     return res.send(results);
   } catch (error) {

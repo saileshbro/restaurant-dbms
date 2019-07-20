@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS users(
     PRIMARY KEY(user_id,username),
     FOREIGN KEY (user_id) references contact_info(contact_info_id) ON DELETE CASCADE
 );
+
+
 CREATE TABLE IF NOT EXISTS food_category
 (
     food_category_id INTEGER(12) NOT NULL,
@@ -25,16 +27,18 @@ CREATE TABLE IF NOT EXISTS food_item
     food_item_name VARCHAR(100) PRIMARY KEY,
     food_item_price INTEGER(10),
     food_category_id INTEGER(10),
+    PRIMARY KEY(food_item_name, food_category_id)
     FOREIGN KEY(food_category_id) REFERENCES food_category(food_category_id) ON DELETE CASCADE
+
 );
 
 CREATE TABLE IF NOT EXISTS menu
 (
     menu_name VARCHAR(100),
-    menu_start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
-    menu_end_date TIMESTAMP,
+    menu_start_date DATE,
+    menu_end_date DATE,
     is_menu_active BOOLEAN DEFAULT 1,
-    PRIMARY KEY(menu_name,menu_start_date)
+    PRIMARY KEY(menu_name,menu_start_date,menu_end_date)
 );
 
 CREATE TABLE IF NOT EXISTS menu_content
@@ -42,9 +46,15 @@ CREATE TABLE IF NOT EXISTS menu_content
     menu_name VARCHAR(100),
     food_item_name VARCHAR(100),
     is_food_available BOOLEAN DEFAULT 1,
+    PRIMARY KEY(menu_name,food_item_name),
     FOREIGN KEY(food_item_name) REFERENCES food_item(food_item_name) ON DELETE CASCADE,
-    FOREIGN KEY (menu_name) REFERENCES menu(menu_name) ON DELETE CASCADE
+    FOREIGN KEY (menu_name) REFERENCES menu(menu_name) ON DELETE CASCADE,
+
 );
+
+
+
+
 CREATE TABLE IF NOT EXISTS customer(
     customer_id VARCHAR(100) PRIMARY KEY,
     FOREIGN KEY (customer_id) REFERENCES users(user_id)

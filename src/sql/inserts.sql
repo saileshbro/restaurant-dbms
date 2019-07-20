@@ -392,3 +392,34 @@ values( 120, 'Curd and Pavlova', 250, 7);
 insert into food_item
     (food_item_id,name,price,food_category_id)
 values(121, 'Jhol Momo', 200, 2 );
+
+--Insert into Menu
+insert into menu
+    (menu_name,menu_start_date,menu_end_date)
+values('New Year Set','2012-12-12','2012-12-24',false);
+insert into menu
+    (menu_name,menu_start_date,menu_end_date)
+values('Dashain Set','2013-09-01','2013-09-18',false);
+insert into menu
+    (menu_name,menu_start_date,menu_end_date)
+values('Lhosar Special','2014-08-01','2014-09-1',false);
+insert into menu
+    (menu_name,menu_start_date,menu_end_date)
+values('Dinner Set','2015-07-19','2015-08-08',false);
+insert into menu
+    (menu_name,menu_start_date,menu_end_date)
+values('Coffee Special','2016-08-21','2016-09-18',false);
+insert into menu
+    (menu_name,menu_start_date,menu_end_date)
+values('Indian Set','2017-09-25','2017-09-28',false);
+insert into menu
+    (menu_name,menu_start_date,menu_end_date)
+values('Chinese Special','2018-11-21','2018-12-03',false);
+insert into menu
+    (menu_name,menu_start_date,menu_end_date)
+values('Tihar Special','2019-12-01','2019-12-18',false);
+
+--insert in menu_content
+insert into menu_content
+    (menu_name,food_item_name,true)
+values('New Year Set','PanCake',false)

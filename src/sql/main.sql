@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS import(
 );
 
 CREATE TABLE IF NOT EXISTS import_detail(
-    import_good VARCHAR(200) UNIQUE,
+    import_good VARCHAR(200),
     import_type VARCHAR(128),
     bill_no INTEGER(10),
     quantity double(10,2),
@@ -109,7 +109,6 @@ CREATE TABLE IF NOT EXISTS stock(
 	type_of_stock VARCHAR(120),
     last_import_date TIMESTAMP,
     quantity double(10,2),
-    FOREIGN KEY (stock_name) REFERENCES import_detail(import_good),
     FOREIGN KEY (last_import_date) REFERENCES import(import_date)
 );
 CREATE TABLE IF NOT EXISTS reservation
@@ -118,6 +117,9 @@ CREATE TABLE IF NOT EXISTS reservation
     table_no INTEGER(10),
     number_of_person INTEGER(2),
     reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
+    reservation_fulfilled_status BOOLEAN DEFAULT false,
+    reserved_for_date Date,
+    reserved_for_time TIME,
     PRIMARY KEY (reservation_date),
     FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
     FOREIGN KEY (table_no) REFERENCES restaurant_table(table_no)

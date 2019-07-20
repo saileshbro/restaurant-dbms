@@ -221,7 +221,7 @@ module.exports.addImport = async (req, res) => {
   } catch (error) {
     if (error.code === "ER_DUP_ENTRY") {
       return res.status(500).send({
-        error: "Import with given information already exists."
+        error
       });
     } else {
       return res.status(500).send({ error });

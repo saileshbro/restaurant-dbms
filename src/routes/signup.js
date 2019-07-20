@@ -27,11 +27,7 @@ router.post(
   contactValidator,
   signupController.createWaiter
 );
-<<<<<<< HEAD
-router.get("/signup/all", signupController.getAllSignups);
-=======
 router.get("/signup/customers", auth, signupController.getAllCustomers);
 router.get("/signup/staffs", auth, signupController.getAllStaffs);
 
->>>>>>> abe73535693fcd7ed346d5f4ced9e85f1bc0a13d
 module.exports = router;

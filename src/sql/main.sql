@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS reservation
     number_of_person INTEGER(2),
     reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
     reservation_fulfilled_status BOOLEAN DEFAULT false,
-    reserved_for_date Date,
+    reserved_for_date TIMESTAMP,
     reserved_for_time TIME,
     PRIMARY KEY (reservation_date),
     FOREIGN KEY (customer_id) REFERENCES customer(customer_id),

@@ -221,7 +221,7 @@ module.exports.addImport = async (req, res) => {
   } catch (error) {
     if (error.code === "ER_DUP_ENTRY") {
       return res.status(500).send({
-        error
+        error: "Import with given information already exists."
       });
     } else {
       return res.status(500).send({ error });
@@ -230,9 +230,11 @@ module.exports.addImport = async (req, res) => {
 };
 
 module.exports.getImports = async (req, res) => {
+  console.log(req.query);
   try {
     const results = await pool.query(
-      `SELECT import_company_id,import.bill_no,total_price,import_date FROM import ORDER BY total_price desc`
+      "SELECT import_company_id,import.bill_no,total_price,import_date FROM import ORDER BY import_date LIMIT ?,20",
+      [(parseInt(req.query.page) - 1) * 20]
     );
     if (!results) {
       return res.status(404).json({ error: "Unable to get Imports" });
@@ -247,7 +249,7 @@ module.exports.getImport = async (req, res) => {
   const { bill_no } = req.params;
   try {
     const result = await pool.query(
-      `SELECT import_company_id,import.bill_no,total_price,import_date,quantity,price,import_good FROM import INNER JOIN import_detail ON import.bill_no= import_detail.bill_no WHERE import.bill_no=? ORDER BY total_price desc`,
+      `SELECT import_company_id,import.bill_no,total_price,import_date,quantity,price,import_good FROM import INNER JOIN import_detail ON import.bill_no= import_detail.bill_no WHERE import.bill_no=?`,
       [bill_no]
     );
     if (!result) {
@@ -284,8 +286,8 @@ module.exports.getImportsByCompany = async (req, res) => {
   const { import_company_id } = req.params;
   try {
     const result1 = await pool.query(
-      `SELECT bill_no,total_price,import_date FROM import WHERE import_company_id=? ORDER BY total_price desc`,
-      [import_company_id]
+      "SELECT bill_no,total_price,import_date FROM import WHERE import_company_id=? ORDER BY import_date LIMIT ?,20",
+      [import_company_id, (parseInt(req.query.page) - 1) * 20]
     );
     if (!result1) {
       return res.status(404).json({
@@ -326,53 +328,3 @@ module.exports.deleteImport = async (req, res) => {
     return res.status(500).send({ error });
   }
 };
-
-//stock crud
-
-// module.exports.addStock = async (req, res) => {
-//     const {
-//         name,
-//         type_of_stock,
-//         last_import_date,
-//         quantity,
-//     } = req.body;
-//     if (!name || name.length == 0) {
-//         return res.status(422).send({
-//             error: "Name of the stock must be provided."
-//         });
-//     }
-//     try {
-//         const insertStock = await pool.query(
-//             "INSERT INTO stock SET name=?,type_of_stock=?,last_import_date=?,quantity=?",
-//             [name, email, phone, address, contact_info_id]
-//         );
-//         if (insertContact.affectedRows == 1) {
-//             const insertCompany = await pool.query(
-//                 "INSERT INTO import_company SET total_transactions=?,remain_transactions=?,purchase_type=?, import_company_id=?",
-//                 [
-//                     total_transactions || 0.0,
-//                     remain_transactions || 0.0,
-//                     purchase_type,
-//                     contact_info_id
-//                 ]
-//             );
-//             if (insertCompany.affectedRows == 1) {
-//                 return res.send({ message: "Import company successfully added." });
-//             } else {
-//                 return res.status(400).send({ error: "Unable to add Company." });
-//             }
-//         } else {
-//             return res.status(400).send({
-//                 error: "Unable to add contact informations to create a company."
-//             });
-//         }
-//     } catch (error) {
-//         if (error.code === "ER_DUP_ENTRY") {
-//             return res.status(500).send({
-//                 error: "Company with given credentials already exists."
-//             });
-//         } else {
-//             return res.status(500).send({ error });
-//         }
-//     }
-// };

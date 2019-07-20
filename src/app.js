@@ -18,6 +18,7 @@ app.use("/api", require("./routes/customer"));
 app.use("/api", require("./routes/table"));
 app.use("/api", require("./routes/restaurant"));
 app.use("/api", require("./routes/stat"));
+app.use("/api", require("./routes/reservation"));
 app.use("/order", require("./routes/order"));
 app.use("/food", require("./routes/food"));
 app.listen(port, () => {

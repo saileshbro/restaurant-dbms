@@ -187,7 +187,6 @@ module.exports.addImport = async (req, res) => {
             "SELECT * FROM stock WHERE stock_name=?",
             [import_details[i].import_good]
           );
-          console.log(getStock);
           if (getStock.length == 0) {
             await pool.query(
               "INSERT INTO stock SET stock_name=?, type_of_stock=?,last_import_date=?,quantity=?",
@@ -230,7 +229,6 @@ module.exports.addImport = async (req, res) => {
 };
 
 module.exports.getImports = async (req, res) => {
-  console.log(req.query);
   try {
     const results = await pool.query(
       "SELECT import_company_id,import.bill_no,total_price,import_date FROM import ORDER BY import_date LIMIT ?,20",

@@ -4,26 +4,46 @@ exports.getImportStats = async (req, res) => {
   try {
     if (year && month && day) {
       const total = await pool.query(
-        "SELECT SUM(total_price) AS import_amount, COUNT(bill_no) AS total_imports FROM import WHERE YEAR(import_date)=? AND MONTH(import_date)=? AND DAY(import_date)=?",
+        "SELECT COALESCE(SUM(total_price),0) AS import_amount, COUNT(bill_no) AS total_imports FROM import WHERE YEAR(import_date)=? AND MONTH(import_date)=? AND DAY(import_date)=?",
         [year, month, day]
       );
       return res.send(...total);
     }
     if (year && month) {
       const total = await pool.query(
-        "SELECT SUM(total_price) AS import_amount, COUNT(bill_no) AS total_imports FROM import WHERE YEAR(import_date)=? AND MONTH(import_date)=?",
+        "SELECT COALESCE(SUM(total_price),0) AS import_amount, COUNT(bill_no) AS total_imports FROM import WHERE YEAR(import_date)=? AND MONTH(import_date)=?",
         [year, month]
       );
       return res.send(...total);
     }
     if (year) {
       const total = await pool.query(
-        "SELECT SUM(total_price) AS import_amount, COUNT(bill_no) AS total_imports FROM import WHERE YEAR(import_date)=?",
+        "SELECT COALESCE(SUM(total_price),0) AS import_amount, COUNT(bill_no) AS total_imports FROM import WHERE YEAR(import_date)=?",
         [year]
       );
       return res.send(...total);
     }
   } catch (error) {
     return res.status(500).send({ error });
+  }
+};
+exports.getImportStatsByImportGood = async (req, res) => {
+  try {
+    const results = await pool.query(
+      "SELECT import_good,sum(quantity) AS quantity,sum(price) as total_cost,sum(price)*100/(select sum(price) from import_detail) as percentage from import_detail group by import_good,import_type ORDER BY total_cost DESC"
+    );
+    return res.send({ imports: results });
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+};
+exports.getImportStatsByImportType = async (req, res) => {
+  try {
+    const results = await pool.query(
+      "select import_type,count(import_good)*100/(SELECT count(import_good) from import_detail) AS percentage,sum(price) as total_price,sum(quantity) as total_quantity from import_detail group by import_type ORDER BY total_price"
+    );
+    return res.send({ imports: results });
+  } catch (error) {
+    return res.status({ error });
   }
 };

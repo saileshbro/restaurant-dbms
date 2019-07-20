@@ -9,7 +9,6 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ error: "Please authenticate" });
     }
     const token = req.header("Authorization").replace("Bearer ", "");
-    console.log(token);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await pool.query(
       "SELECT name,username,email,address,phone,staff_category FROM users LEFT JOIN contact_info ON users.user_id=contact_info.contact_info_id LEFT JOIN staff ON users.user_id=staff.staff_id WHERE users.user_id=?",

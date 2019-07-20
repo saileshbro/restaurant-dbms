@@ -310,12 +310,22 @@ exports.createKitchen = async (req, res) => {
     return res.status(500).send({ error });
   }
 };
-exports.getAllSignups = async (req, res) => {
+exports.getAllCustomers = async (req, res) => {
   try {
     const results = await pool.query(
-      "SELECT * FROM contact_info WHERE contact_info_id IN(SELECT user_id FROM users)"
+      "SELECT * FROM contact_info WHERE contact_info_id IN(SELECT customer_id FROM customer)"
     );
-    return res.send(results);
+    return res.send({ customers: results });
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+};
+exports.getAllStaffs = async (req, res) => {
+  try {
+    const results = await pool.query(
+      "SELECT contact_info.*,staff.staff_category FROM contact_info INNER JOIN staff ON contact_info.contact_info_id=staff.staff_id WHERE staff.staff_id IN (SELECT staff_id FROM staff)"
+    );
+    return res.send({ staffs: results });
   } catch (error) {
     return res.status(500).send({ error });
   }

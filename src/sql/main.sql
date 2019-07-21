@@ -1,61 +1,52 @@
+drop database restaurant;
+create database restaurant;
+use restaurant;
 CREATE TABLE IF NOT EXISTS contact_info
 (
-    contact_info_id VARCHAR(100) PRIMARY KEY,
+    contact_info_id VARCHAR(100),
     name VARCHAR (100) NOT NULL,
     address VARCHAR (150) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    phone VARCHAR(30) NOT NULL
+    email VARCHAR(150) NOT NULL,
+    phone VARCHAR(30) NOT NULL,
+    PRIMARY KEY(contact_info_id)
 );
 CREATE TABLE IF NOT EXISTS users(
     user_id VARCHAR(100),
     username VARCHAR(50),
     password VARCHAR(255),
-    PRIMARY KEY(user_id,username),
-    FOREIGN KEY (user_id) references contact_info(contact_info_id) ON DELETE CASCADE
+    PRIMARY KEY(user_id),
+    FOREIGN KEY (user_id) REFERENCES contact_info(contact_info_id) ON DELETE CASCADE
 );
-
-
 CREATE TABLE IF NOT EXISTS food_category
 (
-    food_category_id INTEGER(12) NOT NULL,
     food_category_name VARCHAR(100),
-    PRIMARY KEY(food_category_id,food_category_name)
+    PRIMARY KEY(food_category_name)
 );
-
 CREATE TABLE IF NOT EXISTS food_item
 (
-    food_item_id INT(10),
     food_item_name VARCHAR(100),
-    food_item_price INTEGER(10),
-    food_category_id INTEGER(10),
-    PRIMARY KEY(food_item_id,food_item_name, food_category_id)
-    FOREIGN KEY(food_category_id) REFERENCES food_category(food_category_id) ON DELETE CASCADE
-
+    food_item_price double(10,2),
+    food_category_name VARCHAR(100),
+    PRIMARY KEY(food_item_name),
+    FOREIGN KEY (food_category_name) REFERENCES food_category(food_category_name)
 );
-
 CREATE TABLE IF NOT EXISTS menu
 (
     menu_name VARCHAR(100),
     menu_start_date DATE,
     menu_end_date DATE,
-    is_menu_active BOOLEAN DEFAULT 1,
-    PRIMARY KEY(menu_name,menu_start_date,menu_end_date)
+    is_menu_active BOOLEAN DEFAULT 0
+    ,
+    PRIMARY KEY(menu_name,menu_start_date)
 );
-
 CREATE TABLE IF NOT EXISTS menu_content
 (
     menu_name VARCHAR(100),
     food_item_name VARCHAR(100),
     is_food_available BOOLEAN DEFAULT 1,
-    PRIMARY KEY(menu_name,food_item_name),
-    FOREIGN KEY(food_item_name) REFERENCES food_item(food_item_name) ON DELETE CASCADE,
-    FOREIGN KEY (menu_name) REFERENCES menu(menu_name) ON DELETE CASCADE,
-
+    FOREIGN KEY (menu_name) REFERENCES menu(menu_name),
+    FOREIGN KEY (food_item_name) REFERENCES food_item(food_item_name)
 );
-
-
-
-
 CREATE TABLE IF NOT EXISTS customer(
     customer_id VARCHAR(100) PRIMARY KEY,
     FOREIGN KEY (customer_id) REFERENCES users(user_id)
@@ -101,9 +92,13 @@ CREATE TABLE IF NOT EXISTS import(
     import_company_id VARCHAR(100),
     bill_no INTEGER(10),
     total_price double(10,2),
-    import_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
-    PRIMARY KEY(bill_no,import_date),
+    import_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE NOT NULL,
+    PRIMARY KEY(bill_no),
     FOREIGN KEY(import_company_id) REFERENCES import_company(import_company_id)
+);
+CREATE TABLE IF NOT EXISTS import_type(
+    import_type VARCHAR(120) PRIMARY KEY,
+    measure_unit VARCHAR(10)
 );
 
 CREATE TABLE IF NOT EXISTS import_detail(
@@ -112,15 +107,16 @@ CREATE TABLE IF NOT EXISTS import_detail(
     bill_no INTEGER(10),
     quantity double(10,2),
     price double(10,2),
-    FOREIGN KEY (bill_no) REFERENCES import(bill_no) ON DELETE CASCADE
+    FOREIGN KEY (bill_no) REFERENCES import(bill_no) ON DELETE CASCADE,
+    FOREIGN KEY(import_type) REFERENCES import_type(import_type)
 );
-
 CREATE TABLE IF NOT EXISTS stock(
     stock_name VARCHAR(200) PRIMARY KEY,
 	type_of_stock VARCHAR(120),
     last_import_date TIMESTAMP,
     quantity double(10,2),
-    FOREIGN KEY (last_import_date) REFERENCES import(import_date)
+    FOREIGN KEY (last_import_date) REFERENCES import(import_date),
+    FOREIGN KEY(type_of_stock) REFERENCES import_type(import_type)
 );
 CREATE TABLE IF NOT EXISTS reservation
 (
@@ -135,60 +131,55 @@ CREATE TABLE IF NOT EXISTS reservation
     FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
     FOREIGN KEY (table_no) REFERENCES restaurant_table(table_no)
 );
-CREATE TABLE IF NOT EXISTS bill(
-	bill_no INTEGER(10) PRIMARY KEY,
-	order_id INTEGER(10),
-	total_price double(10,2),
-    issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE
-);
--- FOREIGN key refer gareko error cha below. Unchanged as per instruction
-CREATE TABLE IF NOT EXISTS home_delivery(
-    customer_id INT(11),
-    delivery_staff_id INT(11),
-    bill_no INT(11),
-    order_id INT(11),
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
-    is_delivered BOOLEAN DEFAULT 0,
-    PRIMARY KEY (order_date),
-    FOREIGN KEY (customer_id) REFERENCES customer(user_id),
-    FOREIGN KEY (delivery_staff_id) REFERENCES staff(user_id),
-    FOREIGN KEY (bill_no) REFERENCES bill(bill_no)
-);
-
-
 CREATE TABLE IF NOT EXISTS food_order
 (
-    order_id varchar(50),
+    order_id VARCHAR(120),
     order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
     PRIMARY KEY (order_id)
 );
 
+CREATE TABLE IF NOT EXISTS home_delivery(
+    home_delivery_no VARCHAR(120),
+    customer_id VARCHAR(120),
+    delivery_staff_id VARCHAR(120),
+    bill_no INT(11),
+    is_delivered BOOLEAN DEFAULT 0,
+    PRIMARY KEY (home_delivery_no),
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
+    FOREIGN KEY (delivery_staff_id) REFERENCES staff(staff_id),
+    FOREIGN KEY (bill_no) REFERENCES bill(bill_no)
+);
+
 CREATE TABLE IF NOT EXISTS order_item(
-    order_id varchar(50),
-    food_item_name varchar(100),
-    quantity int(3),
+    order_id VARCHAR(50),
+    food_item_name VARCHAR(100),
+    quantity INT(3),
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
     FOREIGN KEY (food_item_name) REFERENCES food_item(food_item_name)
 );
-
+CREATE TABLE IF NOT EXISTS bill(
+	bill_no INTEGER(10) PRIMARY KEY,
+	order_id INTEGER(10),
+	total_price double(10,2),
+    issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
+    FOREIGN KEY(order_id) REFERENCES food_order(order_id)
+);
 CREATE TABLE IF NOT EXISTS order_relates_staff(
-    order_id varchar(50),
-    staff_id int (11),
+    order_id VARCHAR(50),
+    staff_id VARCHAR(120),
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
 );
 
 CREATE TABLE IF NOT EXISTS order_relates_table(
-    order_id varchar(50),
-    table_no int (11),
+    order_id VARCHAR(50),
+    table_no INT (11),
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
     FOREIGN KEY(table_no) REFERENCES restaurant_table(table_no)
 );
-    
 CREATE TABLE IF NOT EXISTS order_relates_home_delivery(
-    order_id varchar(50),
-    customer_id int(11),
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
+    order_id VARCHAR(50),
+    customer_id VARCHAR(120),
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
-    FOREIGN KEY (customer_id,order_date) REFERENCES home_delivery(customer_id,order_date)
+    FOREIGN KEY (customer_id) REFERENCES home_delivery(customer_id)
 );

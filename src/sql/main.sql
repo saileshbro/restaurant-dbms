@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS import_type(
 
 CREATE TABLE IF NOT EXISTS import_detail(
     import_good VARCHAR(200),
-    import_type VARCHAR(128),
+    import_type VARCHAR(120),
     bill_no INTEGER(10),
     quantity double(10,2),
     price double(10,2),
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS reservation
     table_no INTEGER(10),
     number_of_person INTEGER(2),
     reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
-    reservation_fulfilled_status BOOLEAN DEFAULT false,
+    reservation_fulfilled_status BOOLEAN DEFAULT 0,
     reserved_for_date TIMESTAMP,
     reserved_for_time TIME,
     PRIMARY KEY (reservation_date),
@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS order_relates_table(
 );
 CREATE TABLE IF NOT EXISTS order_relates_home_delivery(
     order_id VARCHAR(50),
-    customer_id VARCHAR(120),
+    home_delivery_no VARCHAR(120),
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
-    FOREIGN KEY (customer_id) REFERENCES home_delivery(customer_id)
+    FOREIGN KEY (home_delivery_no) REFERENCES home_delivery(home_delivery_no)
 );

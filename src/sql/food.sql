@@ -164,7 +164,7 @@ insert into food_item(food_item_id,name,price,food_category_id) values( 115,'Mal
 insert into food_item(food_item_id,name,price,food_category_id) values( 116,'Vanilla Comb',280,7);
 insert into food_item(food_item_id,name,price,food_category_id) values( 117,'Chocolate Brownie',320,7);
 insert into food_item(food_item_id,name,price,food_category_id) values( 118,'Banana Boat',270,7);
-insert into food_item(food_item_id,name,price,food_category_id) values( 119,'Profiteroles',210,7);
+insert into food_item(food_item_id,name,price,food_category_id) values( 119,'Profitroles',210,7);
 insert into food_item(food_item_id,name,price,food_category_id) values( 120,'Curd and Pavlova',250,7);
 
 

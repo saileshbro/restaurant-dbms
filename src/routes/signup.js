@@ -27,7 +27,7 @@ router.post(
   contactValidator,
   signupController.createWaiter
 );
-router.get("/signup/customers", auth, signupController.getAllCustomers);
-router.get("/signup/staffs", auth, signupController.getAllStaffs);
+router.get("/signup/customers", signupController.getAllCustomers);
+router.get("/signup/staffs", signupController.getAllStaffs);
 
 module.exports = router;

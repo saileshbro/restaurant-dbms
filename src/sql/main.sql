@@ -81,7 +81,6 @@ CREATE TABLE IF NOT EXISTS restaurant
     FOREIGN KEY(restaurant_id) REFERENCES contact_info(contact_info_id)  ON DELETE CASCADE
 );
 
-
 CREATE TABLE IF NOT EXISTS restaurant_table(
     table_no INTEGER(10) PRIMARY KEY,
     is_empty BOOLEAN DEFAULT 1

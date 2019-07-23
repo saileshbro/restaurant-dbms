@@ -33,10 +33,9 @@ CREATE TABLE IF NOT EXISTS food_item
 CREATE TABLE IF NOT EXISTS menu
 (
     menu_name VARCHAR(100),
-    menu_start_date DATE,
+    menu_start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
     menu_end_date DATE,
-    is_menu_active BOOLEAN DEFAULT 0
-    ,
+    is_menu_active BOOLEAN DEFAULT 0,
     PRIMARY KEY(menu_name,menu_start_date)
 );
 CREATE TABLE IF NOT EXISTS menu_content

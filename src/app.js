@@ -19,8 +19,10 @@ app.use("/api", require("./routes/table"));
 app.use("/api", require("./routes/restaurant"));
 app.use("/api", require("./routes/stat"));
 app.use("/api", require("./routes/reservation"));
+app.use("/api", require("./routes/bill"));
 app.use("/order", require("./routes/order"));
 app.use("/food", require("./routes/food"));
+app.use("/menu", require("./routes/menu"));
 app.listen(port, () => {
   console.log(`Server listening at post ${port}`);
 });

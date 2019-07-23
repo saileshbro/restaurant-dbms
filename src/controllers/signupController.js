@@ -330,3 +330,9 @@ exports.getAllStaffs = async (req, res) => {
     return res.status(500).send({ error });
   }
 };
+
+
+
+exports.getAddCustomer = (req, res) => {
+  res.render("./addCustomer.ejs");
+}

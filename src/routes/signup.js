@@ -30,4 +30,6 @@ router.post(
 router.get("/signup/customers", signupController.getAllCustomers);
 router.get("/signup/staffs", signupController.getAllStaffs);
 
+router.get("/signup/customer", signupController.getAddCustomer);
+
 module.exports = router;

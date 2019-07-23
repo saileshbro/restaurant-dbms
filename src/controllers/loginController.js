@@ -26,7 +26,7 @@ exports.loginUser = async (req, res) => {
         },
         process.env.JWT_SECRET
       );
-      return res.send({
+      datta = {
         user_id: result[0].user_id,
         username: result[0].username,
         name: result[0].name,
@@ -34,7 +34,8 @@ exports.loginUser = async (req, res) => {
         address: result[0].address,
         phone: result[0].phone,
         token
-      });
+      }
+      return res.render("./customer.ejs", datta);
     }
   } catch (error) {
     return res.status(500).send({ error });
@@ -84,3 +85,8 @@ exports.restaurantLogin = async (req, res) => {
     return res.status(500).send({ error: "Internal server error." });
   }
 };
+
+
+exports.getUserLoginPage = (req, res) => {
+  res.render("./customerLogin.ejs");
+}

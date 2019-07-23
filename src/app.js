@@ -9,6 +9,10 @@ app.use(
     extended: true
   })
 );
+
+app.set("view-engine", "ejs");
+
+
 const port = process.env.PORT || 3000;
 app.use("/api", require("./routes/signup"));
 app.use("/api", require("./routes/import"));

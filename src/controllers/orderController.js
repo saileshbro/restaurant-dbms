@@ -199,6 +199,49 @@ module.exports.updateDeliveryStatus = async (req, res) => {
     return res.status(500).send({ error: "Internal server error" });
   }
 };
+
+module.exports.getHomeDeliveryByCustomer = async (req, res) => {
+  const { customer_id } = req.params;
+  if (!customer_id || customer_id.length == 0) {
+    return res.send({ message: "Customer id must be specified" });
+  }
+  try {
+    const getHomeDelivery = await pool.query(
+      "SELECT home_delivery_no,delivery_staff_id,is_delivered, order_id from home_delivery inner join order_relates_home_delivery using(home_delivery_no) where customer_id=?",
+      [customer_id]
+    );
+    console.log(getHomeDelivery);
+    if (getHomeDelivery.affectedRows != 0) {
+      const toSend = [];
+      for (let i = 0; i < getHomeDelivery.length; i++) {
+        const {
+          home_delivery_no,
+          order_time,
+          order_id,
+          is_delivered,
+          delivery_staff_id
+        } = getHomeDelivery[i];
+        const result = await pool.query(
+          "SELECT itm.food_item_name,itm.quantity FROM food_order as ord inner join order_item as itm on ord.order_id=itm.order_id where order_id=?",
+          [getHomeDelivery[i].order_id]
+        );
+        toSend.push({
+          order_time,
+          order_id,
+          home_delivery_no,
+          is_delivered,
+          delivery_staff_id,
+          orders: result
+        });
+      }
+      return res.send({ orders: toSend });
+    } else {
+      return res.status(400).send({ error: "Unexpected error" });
+    }
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+};
 exports.getOrdersByStaff = async (req, res) => {
   const { staff_id } = req.params;
   const { completed } = req.query;

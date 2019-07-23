@@ -10,6 +10,8 @@ router.post("/orders/makecomplete/:order_id", orderController.completeAOrder);
 router.post("/orders/homeDelivery/:customer_id", orderController.placeHomeDelivery);
 router.patch("/orders/homeDelivery/assignStaff/:home_delivery_id", orderController.assignDeliveryStaff);
 router.patch("/orders/homeDelivery/updateDeliveryStatus/:home_delivery_id", orderController.updateDeliveryStatus);
+router.get("/orders/homeDelivery/customer/:customer_id", orderController.getHomeDeliveryByCustomer);
+// router.get("/orders/homeDelivery/:homedelivery_no", orderController.getHomeDeliveryByCustomer);
 router.get("/orders", orderController.showOrders);
 router.get("/orders/table/:table_no", orderController.getTableOrders);
 router.get("/orders/staff/:staff_id", orderController.getOrdersByStaff);

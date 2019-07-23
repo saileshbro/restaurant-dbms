@@ -34,7 +34,7 @@ exports.deleteStaffProfile = async (req, res) => {
   const { staff_id } = req.params;
   try {
     const deleteProfile = await pool.query(
-      "SET ;DELETE users.*,contact_info.* FROM users INNER JOIN contact_info ON users.user_id=contact_info.contact_info_id WHERE users.user_id=?",
+      "DELETE users.*,contact_info.* FROM users INNER JOIN contact_info ON users.user_id=contact_info.contact_info_id WHERE users.user_id=?",
       [staff_id]
     );
     if (deleteProfile.affectedRows > 0) {

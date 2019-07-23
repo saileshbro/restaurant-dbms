@@ -117,7 +117,6 @@ exports.getTableOrders = async (req, res) => {
     return res.status(500).send({ error: "Internal server error" });
   }
 };
-<<<<<<< HEAD
 
 module.exports.placeHomeDelivery = async (req, res) => {
   const {
@@ -190,7 +189,6 @@ module.exports.updateDeliveryStatus = async (req, res) => {
     return res.status(500).send({ error: "Internal server error" });
   }
 }
-=======
 exports.getOrdersByStaff = async (req, res) => {
   const { staff_id } = req.params;
   const { completed } = req.query;
@@ -238,7 +236,6 @@ exports.getCustomerOrders = async (req, res) => {
   );
   return res.send(orderIds);
 };
->>>>>>> 0568177e4308455fe56d43a9fef172590a5c8862
 // is_order_complete halne############
 // completion anusar order haru herne#################
 // order ko completion change garne###################

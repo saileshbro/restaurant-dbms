@@ -15,23 +15,38 @@ module.exports.deleteOrder = async (req, res) => {
 };
 module.exports.showOrders = async (req, res) => {
   try {
-    const results = await pool.query(
-      `SELECT order_id, order_time FROM food_order INNER JOIN `
+    const orderIds = await pool.query(
+      "SELECT DISTINCT order_id,order_time,table_no from order_item inner join order_relates_table using (order_id) inner join food_order using(order_id)"
     );
-    if (!results) {
-      return res.status(404).json({ error: "Unexpected error" });
+    const toSend = [];
+    for (let i = 0; i < orderIds.length; i++) {
+      let { order_time, table_no } = orderIds[i];
+      const result = await pool.query(
+        "SELECT itm.food_item_name,COALESCE(itm.quantity,1) AS quantity FROM food_order AS ord INNER JOIN order_relates_table AS tbl ON ord.order_id = tbl.order_id INNER JOIN order_item AS itm ON itm.order_id=ord.order_id where ord.order_id=?",
+        [orderIds[i].order_id]
+      );
+      toSend.push({ order_time, table_no, orders: result });
     }
-    return res.send({ food_items: results });
+    const homeOrderIds = await pool.query(
+      "SELECT DISTINCT order_id,order_time,home_delivery_no from order_item inner join order_relates_home_delivery using (order_id) inner join food_order using(order_id)"
+    );
+    for (let i = 0; i < homeOrderIds.length; i++) {
+      let { order_time, home_delivery_no } = homeOrderIds[i];
+      const result = await pool.query(
+        "SELECT itm.food_item_name,COALESCE(itm.quantity,1) AS quantity FROM food_order AS ord INNER JOIN order_relates_home_delivery AS tbl ON ord.order_id = tbl.order_id INNER JOIN order_item AS itm ON itm.order_id=ord.order_id where ord.order_id=?",
+        [homeOrderIds[i].order_id]
+      );
+      toSend.push({ order_time, home_delivery_no, orders: result });
+    }
+    return res.send({ orders: toSend });
   } catch (error) {
-    return res.send({ error: "Internal server error." });
+    return res.status(500).send({ error });
   }
 };
 exports.createTableOrder = async (req, res) => {
-  console.log("hit");
   const table_no = req.params.table_no;
   const staff_id = req.params.staff_id;
   const { order_items } = req.body;
-  console.log(order_items);
   const order_id = generateId("ORD");
   try {
     const insertFoodOrder = await pool.query(
@@ -65,3 +80,22 @@ exports.createTableOrder = async (req, res) => {
     return res.status(500).send({ error });
   }
 };
+
+// is_order_complete halne
+// completion anusar order haru herne
+// order ko completion change garne
+// order ko bill issue garne
+// eauta table ko orders herne
+// eauta staff ko orders herne
+// eauta customer ko herne
+// homedelivery ko place gerne
+// time anusar order nikalne
+// order ko bill banaune
+// home delivery ko ni bill banaune
+// eauta kunai order ma aaru items halney
+// isfoodavailable change garne menu bata
+
+// get total bill amounts date anusar
+// get total items sold date anusar
+// get total profit date anusar
+// kk besi sell vaira cha tyo

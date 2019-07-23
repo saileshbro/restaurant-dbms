@@ -12,6 +12,10 @@ exports.createRestaurant = async (req, res) => {
     total_tables
   } = req.body;
   try {
+    const ifExists = await pool.query("SELECT * FROM restaurant");
+    if (ifExists.length > 0) {
+      return res.status(403).send({ error: "Restaurant already exists" });
+    }
     const insertInContact = await pool.query(
       "INSERT INTO contact_info SET contact_info_id=?,name=?,address=?,email=?,phone=?",
       [rest_id, name, address, email, phone]

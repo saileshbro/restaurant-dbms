@@ -1,16 +1,20 @@
-const pool = require('../database/database');
+const pool = require("../database/database");
 const { generateId } = require("../functions/id");
 module.exports.createBill = async (req, res) => {
+    const { issue_date } = req.body;
     const bill_no = generateId("BILL");
     const { order_id } = req.params;
-    if (bill_no.length == 0 || !bill_no || order_id.length == 0 || !order_id) {
+    if (bill_no == 0 || !bill_no || order_id.length == 0 || !order_id) {
         return res.send({ error: "Bill number and order id not provided" });
     }
     try {
-        const total_price = await pool.query("SELECT SUM(food_item.food_item_price) as total_price from food_item INNER JOIN order_item ON food_item.food_item_name=order_item.food_item_name where order_item.order_id=?", [order_id]);
+        const total_price = await pool.query(
+            "SELECT SUM(food_item.food_item_price) as total_price from food_item INNER JOIN order_item ON food_item.food_item_name=order_item.food_item_name where order_item.order_id=?",
+            [order_id]
+        );
         const insertbill = await pool.query(
-            `INSERT INTO bill SET bill_no=?,order_id=?,total_price=?`,
-            [bill_no, order_id, total_price]
+            `INSERT INTO bill SET bill_no=?,issue_date=?,order_id=?,total_price=?`,
+            [bill_no, issue_date, order_id, total_price]
         );
         console.log(insertbill);
         if (insertbill.affectedRows == 1) {
@@ -18,7 +22,6 @@ module.exports.createBill = async (req, res) => {
         } else {
             return res.status(400).send({ error: "Unable to create bill." });
         }
-
     } catch (error) {
         if (error.code === "ER_DUP_ENTRY") {
             return res.status(500).send({
@@ -28,7 +31,7 @@ module.exports.createBill = async (req, res) => {
             return res.status(500).send({ error });
         }
     }
-}
+};
 
 module.exports.getBill = async (req, res) => {
     const { bill_no } = req.params;
@@ -36,7 +39,10 @@ module.exports.getBill = async (req, res) => {
         return res.send({ message: "Bill number must be specified" });
     }
     try {
-        const getBill = await pool.query("SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE bill_no=? ", [bill_no]);
+        const getBill = await pool.query(
+            "SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE bill_no=? ",
+            [bill_no]
+        );
         if (getBill.affectedRows != 0) {
             return res.send({ bill: getBill });
         } else {
@@ -45,7 +51,7 @@ module.exports.getBill = async (req, res) => {
     } catch (error) {
         return res.status(500).send({ error: "Internal server error." });
     }
-}
+};
 
 module.exports.getBillByOrder = async (req, res) => {
     const { order_id } = req.params;
@@ -53,7 +59,10 @@ module.exports.getBillByOrder = async (req, res) => {
         return res.send({ message: "Order id must be specified" });
     }
     try {
-        const getBill = await pool.query("SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE order_id=? ", [order_id]);
+        const getBill = await pool.query(
+            "SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE order_id=? ",
+            [order_id]
+        );
         if (getBill.affectedRows != 0) {
             return res.send({ bill: getBill });
         } else {
@@ -62,7 +71,7 @@ module.exports.getBillByOrder = async (req, res) => {
     } catch (error) {
         return res.status(500).send({ error: "Internal server error." });
     }
-}
+};
 
 module.exports.getBillByDate = async (req, res) => {
     const { issue_date } = req.params;
@@ -70,7 +79,10 @@ module.exports.getBillByDate = async (req, res) => {
         return res.send({ message: "Issued date of bill must be specified" });
     }
     try {
-        const getBill = await pool.query("SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE bill_no=? ", [issue_date]);
+        const getBill = await pool.query(
+            "SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE bill_no=? ",
+            [issue_date]
+        );
         if (getBill.affectedRows != 0) {
             return res.send({ bill: getBill });
         } else {
@@ -79,4 +91,4 @@ module.exports.getBillByDate = async (req, res) => {
     } catch (error) {
         return res.status(500).send({ error: "Internal server error." });
     }
-}
+};

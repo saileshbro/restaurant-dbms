@@ -18,7 +18,7 @@ module.exports.showOrders = async (req, res) => {
   try {
     const orderIds = await pool.query(
       "SELECT DISTINCT order_id,order_time,table_no from order_item inner join order_relates_table using (order_id) inner join food_order using(order_id) WHERE is_order_complete=? ORDER BY order_time DESC LIMIT ?,5",
-      [completed || 0, (parseInt(req.query.page) - 1) * 5]
+      [completed || 0, (parseInt(page) - 1) * 5]
     );
     const toSend = [];
     for (let i = 0; i < orderIds.length; i++) {
@@ -31,7 +31,7 @@ module.exports.showOrders = async (req, res) => {
     }
     const homeOrderIds = await pool.query(
       "SELECT DISTINCT order_id,order_time,home_delivery_no from order_item inner join order_relates_home_delivery using (order_id) inner join food_order using(order_id) WHERE is_order_complete=? ORDER BY order_time DESC LIMIT ?,5",
-      [completed || 0, (parseInt(req.query.page) - 1) * 5]
+      [completed || 0, (parseInt(page) - 1) * 5]
     );
     for (let i = 0; i < homeOrderIds.length; i++) {
       let { order_id, order_time, home_delivery_no } = homeOrderIds[i];
@@ -119,16 +119,15 @@ exports.getTableOrders = async (req, res) => {
 };
 
 module.exports.placeHomeDelivery = async (req, res) => {
-  const {
-    customer_id
-  } = req.params;
-  const {
-    order_items
-  } = req.body;
+  const { customer_id } = req.params;
+  const { order_items } = req.body;
   const order_id = generateId("ORD");
-  const home_delivery_no = generateId('HD');
+  const home_delivery_no = generateId("HD");
   try {
-    const placeHomeDelivery = await pool.query("INSERT INTO home_delivery SET customer_id=?, home_delivery_no=?", [customer_id, home_delivery_no]);
+    const placeHomeDelivery = await pool.query(
+      "INSERT INTO home_delivery SET customer_id=?, home_delivery_no=?",
+      [customer_id, home_delivery_no]
+    );
     if (placeHomeDelivery.affectedRows != 0) {
       const insertFoodOrder = await pool.query(
         "INSERT INTO food_order SET order_id=?",
@@ -142,11 +141,16 @@ module.exports.placeHomeDelivery = async (req, res) => {
             [order_id, order_items[i].food_item_name, order_items[i].quantity]
           );
         }
-        const insertInRelation = await pool.query("INSERT INTO order_relates_home_delivery SET order_id=?,home_delivery_no=?", [order_id, home_delivery_no]);
+        const insertInRelation = await pool.query(
+          "INSERT INTO order_relates_home_delivery SET order_id=?,home_delivery_no=?",
+          [order_id, home_delivery_no]
+        );
         if (insertInRelation.affectedRows != 0) {
           return res.send({ message: "Home Delivery successfully placed." });
         } else {
-          return res.status(400).send({ error: "Home delivery request could not be placed." });
+          return res
+            .status(400)
+            .send({ error: "Home delivery request could not be placed." });
         }
       }
     }
@@ -159,13 +163,16 @@ module.exports.placeHomeDelivery = async (req, res) => {
       return res.status(500).send({ error });
     }
   }
-}
+};
 
 module.exports.assignDeliveryStaff = async (req, res) => {
   const { home_delivery_no } = req.params;
   const { staff_id } = req.body;
   try {
-    const assignDeliveryStaff = await pool.query("UPDATE home_delivery SET delivery_staff_id=? where home_delivery_no=?", [staff_id, home_delivery_no]);
+    const assignDeliveryStaff = await pool.query(
+      "UPDATE home_delivery SET delivery_staff_id=? where home_delivery_no=?",
+      [staff_id, home_delivery_no]
+    );
     if (assignDeliveryStaff.affectedRows != 0) {
       res.send({ message: "Delivery staff Successfully Assigned." });
     } else {
@@ -174,12 +181,15 @@ module.exports.assignDeliveryStaff = async (req, res) => {
   } catch (error) {
     return res.status(500).send({ error: "Internal server error" });
   }
-}
+};
 
 module.exports.updateDeliveryStatus = async (req, res) => {
   const { home_delivery_no } = req.params;
   try {
-    const updateDeliveryStatus = await pool.query("UPDATE home_delivery SET is_delivered=1 where home_delivery_no=?", [home_delivery_no]);
+    const updateDeliveryStatus = await pool.query(
+      "UPDATE home_delivery SET is_delivered=1 where home_delivery_no=?",
+      [home_delivery_no]
+    );
     if (updateDeliveryStatus.affectedRows != 0) {
       res.send({ message: "Delivery status Successfully updated." });
     } else {
@@ -188,25 +198,41 @@ module.exports.updateDeliveryStatus = async (req, res) => {
   } catch (error) {
     return res.status(500).send({ error: "Internal server error" });
   }
-}
-module.exports.getHomeDeliveryByCustomer = async (req, res) => {
+};
 
+module.exports.getHomeDeliveryByCustomer = async (req, res) => {
   const { customer_id } = req.params;
   if (!customer_id || customer_id.length == 0) {
     return res.send({ message: "Customer id must be specified" });
   }
   try {
-    const getHomeDelivery = await pool.query("SELECT home_delivery_no,delivery_staff_id,is_delivered, order_id from home_delivery inner join order_relates_home_delivery using(home_delivery_no) where customer_id=?", [customer_id]);
+    const getHomeDelivery = await pool.query(
+      "SELECT home_delivery_no,delivery_staff_id,is_delivered, order_id from home_delivery inner join order_relates_home_delivery using(home_delivery_no) where customer_id=?",
+      [customer_id]
+    );
     console.log(getHomeDelivery);
     if (getHomeDelivery.affectedRows != 0) {
       const toSend = [];
       for (let i = 0; i < getHomeDelivery.length; i++) {
-        const { home_delivery_no, order_time, order_id, is_delivered, delivery_staff_id } = getHomeDelivery[i];
+        const {
+          home_delivery_no,
+          order_time,
+          order_id,
+          is_delivered,
+          delivery_staff_id
+        } = getHomeDelivery[i];
         const result = await pool.query(
-          "SELECT itm.food_item_name,itm.quantity FROM food_order as ord inner join order_item as itm on ord.order_id=itm.order_id where order_id=?",
+          "SELECT itm.food_item_name,itm.quantity FROM food_order as ord inner join order_item as itm on ord.order_id=itm.order_id where ord.order_id=?",
           [getHomeDelivery[i].order_id]
         );
-        toSend.push({ order_time, order_id, home_delivery_no, is_delivered, delivery_staff_id, orders: result })
+        toSend.push({
+          order_time,
+          order_id,
+          home_delivery_no,
+          is_delivered,
+          delivery_staff_id,
+          orders: result
+        });
       }
       return res.send({ orders: toSend });
     } else {
@@ -215,7 +241,48 @@ module.exports.getHomeDeliveryByCustomer = async (req, res) => {
   } catch (error) {
     return res.status(500).send({ error });
   }
-}
+};
+module.exports.getHomeDelivery = async (req, res) => {
+  const { home_delivery_no } = req.params;
+  if (!home_delivery_no || home_delivery_no.length == 0) {
+    return res.send({ message: "Home delivery no must be specified" });
+  }
+  try {
+    const getHomeDelivery = await pool.query(
+      "SELECT customer_id,delivery_staff_id,is_delivered, order_id from home_delivery inner join order_relates_home_delivery using(home_delivery_no) where home_delivery_no=?",
+      [home_delivery_no]
+    );
+    if (getHomeDelivery.affectedRows != 0) {
+      const toSend = [];
+      for (let i = 0; i < getHomeDelivery.length; i++) {
+        const {
+          order_time,
+          order_id,
+          is_delivered,
+          customer_id,
+          delivery_staff_id
+        } = getHomeDelivery[i];
+        const result = await pool.query(
+          "SELECT itm.food_item_name,COALESCE(itm.quantity,1) as quantity FROM food_order as ord inner join order_item as itm on ord.order_id=itm.order_id where ord.order_id=?",
+          [getHomeDelivery[i].order_id]
+        );
+        toSend.push({
+          order_time,
+          order_id,
+          customer_id,
+          is_delivered,
+          delivery_staff_id,
+          orders: result
+        });
+      }
+      return res.send({ orders: toSend });
+    } else {
+      return res.status(400).send({ error: "Unexpected error" });
+    }
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+};
 exports.getOrdersByStaff = async (req, res) => {
   const { staff_id } = req.params;
   const { completed } = req.query;

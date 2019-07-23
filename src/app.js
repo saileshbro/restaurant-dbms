@@ -9,6 +9,9 @@ app.use(
     extended: true
   })
 );
+
+app.set("view-engine", "ejs");
+
 const port = process.env.PORT || 3000;
 app.use("/api", require("./routes/signup"));
 app.use("/api", require("./routes/import"));
@@ -19,6 +22,7 @@ app.use("/api", require("./routes/table"));
 app.use("/api", require("./routes/restaurant"));
 app.use("/api", require("./routes/stat"));
 app.use("/api", require("./routes/reservation"));
+app.use("/api", require("./routes/bill"));
 app.use("/api", require("./routes/order"));
 app.use("/api", require("./routes/food"));
 app.use("/api", require("./routes/menu"));

@@ -48,11 +48,11 @@ module.exports.addFood = async (req, res) => {
   } catch (error) {
     if (error.code === "ER_DUP_ENTRY")
       return res.status(500).send({ error: `${name} already exists.` });
-    else return res.status(500).send({ error: "Internal server error." });
+    else return res.status(500).send({ error });
   }
 };
 module.exports.getFoodsByCategory = async (req, res) => {
-  const {food_category_name} = req.params;
+  const { food_category_name } = req.params;
   try {
     const results = await pool.query(
       `SELECT f.food_item_name,f.food_item_price,cat.food_category_name 
@@ -141,15 +141,15 @@ module.exports.getFoodCategory = async (req, res) => {
     return res.send({ error: "Internal server error." });
   }
 };
-exports.addFoodCategory = async(req,res)=>{
-  const {food_category_name} = req.body;
+exports.addFoodCategory = async (req, res) => {
+  const { food_category_name } = req.body;
   try {
-    const insert = await pool.query("INSERT INTO food_category SET food_category_name=?",[food_category_name]);
-    if(insert.affectedRows==1){
-      return res.send({message: "Inserted successfully"});
+    const insert = await pool.query("INSERT INTO food_category SET food_category_name=?", [food_category_name]);
+    if (insert.affectedRows == 1) {
+      return res.send({ message: "Inserted successfully" });
     }
-    return res.status(403).send({error:"Unable to add category"});
+    return res.status(403).send({ error: "Unable to add category" });
   } catch (error) {
-    return res.status(500).send({error});
+    return res.status(500).send({ error });
   }
 };

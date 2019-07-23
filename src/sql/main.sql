@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS food_order
 (
     order_id VARCHAR(120),
     order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP UNIQUE,
+    is_order_complete BOOLEAN DEFAULT 0,
     PRIMARY KEY (order_id)
 );
 

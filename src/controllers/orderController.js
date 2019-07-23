@@ -338,9 +338,9 @@ exports.getCustomerOrders = async (req, res) => {
 // eauta staff ko orders herne#############
 // eauta customer ko herne*********
 // homedelivery ko place gerne************
-// time anusar order nikalne####################333
 // order ko bill banaune**************
 // home delivery ko ni bill banaune****************
+// time anusar order nikalne####################333
 // eauta kunai order ma aaru items halney###################
 // isfoodavailable change garne menu bata##################
 

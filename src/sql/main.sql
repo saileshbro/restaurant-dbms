@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS home_delivery(
 CREATE TABLE IF NOT EXISTS order_item(
     order_id VARCHAR(50),
     food_item_name VARCHAR(100),
-    quantity INT(3),
+    quantity INT(3) DEFAULT 1,
     FOREIGN KEY (order_id) REFERENCES food_order(order_id),
     FOREIGN KEY (food_item_name) REFERENCES food_item(food_item_name)
 );

@@ -32,3 +32,54 @@ module.exports.createBill = async (req, res) => {
         }
     }
 }
+
+module.exports.getBill = async (req, res) => {
+    const { bill_no } = req.params;
+    if (!bill_no || bill_no.length == 0) {
+        return res.send({ message: "Bill number must be specified" });
+    }
+    try {
+        const getBill = await pool.query("SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE bill_no=? ", [bill_no]);
+        if (getBill.affectedRows != 0) {
+            return res.send({ bill: getBill });
+        } else {
+            return res.status(400).send({ error: "Bill couldn't be obtained" });
+        }
+    } catch (error) {
+        return res.status(500).send({ error: "Internal server error." });
+    }
+}
+
+module.exports.getBillByOrder = async (req, res) => {
+    const { order_id } = req.params;
+    if (!order_id || order_id.length == 0) {
+        return res.send({ message: "Order id must be specified" });
+    }
+    try {
+        const getBill = await pool.query("SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE order_id=? ", [order_id]);
+        if (getBill.affectedRows != 0) {
+            return res.send({ bill: getBill });
+        } else {
+            return res.status(400).send({ error: "Bill couldn't be obtained" });
+        }
+    } catch (error) {
+        return res.status(500).send({ error: "Internal server error." });
+    }
+}
+
+module.exports.getBillByDate = async (req, res) => {
+    const { issue_date } = req.params;
+    if (!issue_date || issue_date.length == 0) {
+        return res.send({ message: "Issued date of bill must be specified" });
+    }
+    try {
+        const getBill = await pool.query("SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE bill_no=? ", [issue_date]);
+        if (getBill.affectedRows != 0) {
+            return res.send({ bill: getBill });
+        } else {
+            return res.status(400).send({ error: "Bill couldn't be obtained" });
+        }
+    } catch (error) {
+        return res.status(500).send({ error: "Internal server error." });
+    }
+}

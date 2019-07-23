@@ -53,7 +53,7 @@ exports.addCategory = async (req, res) => {
       "INSERT INTO staff_category SET staff_category=?,salary=?",
       [staff_category, salary]
     );
-    if (!insert.affectedRows == 1) {
+    if (insert.affectedRows != 1) {
       return res.status(403).send({ error: "Unexpected error occured" });
     }
     return res.send({ message: "Successfully added." });

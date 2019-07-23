@@ -7,7 +7,7 @@ module.exports.createCustomer = async (req, res) => {
   const { username, password, name, address, email, phone } = req.body;
   try {
     const ifExists = await pool.query(
-      "SELECT username,email FROM users INNER JOIN contact_info ON users.user_id=contact_info.contact_info_id WHERE username=? OR email=?",
+      "SELECT username,email from users inner join contact_info on user_id=contact_info_id where username=? or email=?",
       [username, email]
     );
     if (ifExists && ifExists.length > 0) {
@@ -73,8 +73,8 @@ exports.createManager = async (req, res) => {
   }
   try {
     const ifExists = await pool.query(
-      "SELECT username,email,staff_category FROM users LEFT JOIN contact_info ON users.user_id=contact_info.contact_info_id  LEFT JOIN staff ON users.user_id=staff.staff_id WHERE (username=? OR email=?) OR staff_category=?",
-      [username, email, staff_category]
+      "SELECT username,email from users inner join contact_info on user_id=contact_info_id where username=? or email=?",
+      [username, email]
     );
     if (ifExists && ifExists.length > 0) {
       return res.status(403).send({ error: "User already exists" });
@@ -157,8 +157,8 @@ exports.createWaiter = async (req, res) => {
   }
   try {
     const ifExists = await pool.query(
-      "SELECT username,email,staff_category FROM users LEFT JOIN contact_info ON users.user_id=contact_info.contact_info_id  LEFT JOIN staff ON users.user_id=staff.staff_id WHERE (username=? OR email=?) AND staff_category=?",
-      [username, email, staff_category]
+      "SELECT username,email from users inner join contact_info on user_id=contact_info_id where username=? or email=?",
+      [username, email]
     );
     if (ifExists && ifExists.length > 0) {
       return res.status(403).send({ error: "User already exists" });
@@ -241,8 +241,8 @@ exports.createKitchen = async (req, res) => {
   }
   try {
     const ifExists = await pool.query(
-      "SELECT username,email,staff_category FROM users LEFT JOIN contact_info ON users.user_id=contact_info.contact_info_id  LEFT JOIN staff ON users.user_id=staff.staff_id WHERE (username=? OR email=?) AND staff_category=?",
-      [username, email, staff_category]
+      "SELECT username,email from users inner join contact_info on user_id=contact_info_id where username=? or email=?",
+      [username, email]
     );
     if (ifExists && ifExists.length > 0) {
       return res.status(403).send({ error: "User already exists" });
@@ -313,7 +313,7 @@ exports.createKitchen = async (req, res) => {
 exports.getAllCustomers = async (req, res) => {
   try {
     const results = await pool.query(
-      "SELECT * FROM contact_info WHERE contact_info_id IN(SELECT customer_id FROM customer)"
+      "SELECT contact_info.*,users.username FROM contact_info inner join users on users.user_id=contact_info.contact_info_id WHERE contact_info_id IN(SELECT customer_id FROM customer)"
     );
     return res.send({ customers: results });
   } catch (error) {
@@ -323,7 +323,7 @@ exports.getAllCustomers = async (req, res) => {
 exports.getAllStaffs = async (req, res) => {
   try {
     const results = await pool.query(
-      "SELECT contact_info.*,staff.staff_category FROM contact_info INNER JOIN staff ON contact_info.contact_info_id=staff.staff_id WHERE staff.staff_id IN (SELECT staff_id FROM staff)"
+      "SELECT contact_info.*,staff.staff_category,users.username FROM contact_info INNER JOIN staff ON contact_info.contact_info_id=staff.staff_id inner join users on users.user_id=contact_info.contact_info_id WHERE staff.staff_id IN (SELECT staff_id FROM staff)"
     );
     return res.send({ staffs: results });
   } catch (error) {

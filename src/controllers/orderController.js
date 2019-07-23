@@ -119,16 +119,15 @@ exports.getTableOrders = async (req, res) => {
 };
 
 module.exports.placeHomeDelivery = async (req, res) => {
-  const {
-    customer_id
-  } = req.params;
-  const {
-    order_items
-  } = req.body;
+  const { customer_id } = req.params;
+  const { order_items } = req.body;
   const order_id = generateId("ORD");
-  const home_delivery_no = generateId('HD');
+  const home_delivery_no = generateId("HD");
   try {
-    const placeHomeDelivery = await pool.query("INSERT INTO home_delivery SET customer_id=?, home_delivery_no=?", [customer_id, home_delivery_no]);
+    const placeHomeDelivery = await pool.query(
+      "INSERT INTO home_delivery SET customer_id=?, home_delivery_no=?",
+      [customer_id, home_delivery_no]
+    );
     if (placeHomeDelivery.affectedRows != 0) {
       const insertFoodOrder = await pool.query(
         "INSERT INTO food_order SET order_id=?",
@@ -142,11 +141,16 @@ module.exports.placeHomeDelivery = async (req, res) => {
             [order_id, order_items[i].food_item_name, order_items[i].quantity]
           );
         }
-        const insertInRelation = await pool.query("INSERT INTO order_relates_home_delivery SET order_id=?,home_delivery_no=?", [order_id, home_delivery_no]);
+        const insertInRelation = await pool.query(
+          "INSERT INTO order_relates_home_delivery SET order_id=?,home_delivery_no=?",
+          [order_id, home_delivery_no]
+        );
         if (insertInRelation.affectedRows != 0) {
           return res.send({ message: "Home Delivery successfully placed." });
         } else {
-          return res.status(400).send({ error: "Home delivery request could not be placed." });
+          return res
+            .status(400)
+            .send({ error: "Home delivery request could not be placed." });
         }
       }
     }
@@ -159,13 +163,16 @@ module.exports.placeHomeDelivery = async (req, res) => {
       return res.status(500).send({ error });
     }
   }
-}
+};
 
 module.exports.assignDeliveryStaff = async (req, res) => {
   const { home_delivery_no } = req.params;
   const { staff_id } = req.body;
   try {
-    const assignDeliveryStaff = await pool.query("UPDATE home_delivery SET delivery_staff_id=? where home_delivery_no=?", [staff_id, home_delivery_no]);
+    const assignDeliveryStaff = await pool.query(
+      "UPDATE home_delivery SET delivery_staff_id=? where home_delivery_no=?",
+      [staff_id, home_delivery_no]
+    );
     if (assignDeliveryStaff.affectedRows != 0) {
       res.send({ message: "Delivery staff Successfully Assigned." });
     } else {
@@ -174,12 +181,15 @@ module.exports.assignDeliveryStaff = async (req, res) => {
   } catch (error) {
     return res.status(500).send({ error: "Internal server error" });
   }
-}
+};
 
 module.exports.updateDeliveryStatus = async (req, res) => {
   const { home_delivery_no } = req.params;
   try {
-    const updateDeliveryStatus = await pool.query("UPDATE home_delivery SET is_delivered=1 where home_delivery_no=?", [home_delivery_no]);
+    const updateDeliveryStatus = await pool.query(
+      "UPDATE home_delivery SET is_delivered=1 where home_delivery_no=?",
+      [home_delivery_no]
+    );
     if (updateDeliveryStatus.affectedRows != 0) {
       res.send({ message: "Delivery status Successfully updated." });
     } else {
@@ -188,7 +198,7 @@ module.exports.updateDeliveryStatus = async (req, res) => {
   } catch (error) {
     return res.status(500).send({ error: "Internal server error" });
   }
-}
+};
 exports.getOrdersByStaff = async (req, res) => {
   const { staff_id } = req.params;
   const { completed } = req.query;

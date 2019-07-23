@@ -14,9 +14,11 @@ module.exports.deleteOrder = async (req, res) => {
   }
 };
 module.exports.showOrders = async (req, res) => {
+  const { completed } = req.query;
   try {
     const orderIds = await pool.query(
-      "SELECT DISTINCT order_id,order_time,table_no from order_item inner join order_relates_table using (order_id) inner join food_order using(order_id)"
+      "SELECT DISTINCT order_id,order_time,table_no from order_item inner join order_relates_table using (order_id) inner join food_order using(order_id) WHERE is_order_complete=?",
+      [completed || 0]
     );
     const toSend = [];
     for (let i = 0; i < orderIds.length; i++) {
@@ -28,7 +30,8 @@ module.exports.showOrders = async (req, res) => {
       toSend.push({ order_time, table_no, orders: result });
     }
     const homeOrderIds = await pool.query(
-      "SELECT DISTINCT order_id,order_time,home_delivery_no from order_item inner join order_relates_home_delivery using (order_id) inner join food_order using(order_id)"
+      "SELECT DISTINCT order_id,order_time,home_delivery_no from order_item inner join order_relates_home_delivery using (order_id) inner join food_order using(order_id) WHERE is_order_complete=?",
+      [completed || 0]
     );
     for (let i = 0; i < homeOrderIds.length; i++) {
       let { order_time, home_delivery_no } = homeOrderIds[i];
@@ -80,12 +83,47 @@ exports.createTableOrder = async (req, res) => {
     return res.status(500).send({ error });
   }
 };
-
-// is_order_complete halne
-// completion anusar order haru herne
-// order ko completion change garne
+exports.completeAOrder = async (req, res) => {
+  const { order_id } = req.params;
+  try {
+    const result = await pool.query(
+      "UPDATE food_order SET is_order_complete=? WHERE order_id=?",
+      [1, order_id]
+    );
+    if (result.affectedRows == 1) {
+      return res.send({ message: "Order completed" });
+    }
+  } catch (error) {
+    return res.status(500).send({ error: "Internal server error" });
+  }
+};
+exports.getTableOrders = async (req, res) => {
+  const { table_no } = req.params;
+  const { completed } = req.query;
+  try {
+    const orderIds = await pool.query(
+      "SELECT DISTINCT order_id,order_time,table_no from order_item inner join order_relates_table using (order_id) inner join food_order using(order_id) WHERE is_order_complete=? AND table_no=?",
+      [completed || 0, table_no]
+    );
+    const toSend = [];
+    for (let i = 0; i < orderIds.length; i++) {
+      let { order_time, table_no } = orderIds[i];
+      const result = await pool.query(
+        "SELECT itm.food_item_name,COALESCE(itm.quantity,1) AS quantity FROM food_order AS ord INNER JOIN order_relates_table AS tbl ON ord.order_id = tbl.order_id INNER JOIN order_item AS itm ON itm.order_id=ord.order_id where ord.order_id=?",
+        [orderIds[i].order_id]
+      );
+      toSend.push({ order_time, table_no, orders: result });
+    }
+    return res.send({ orders: toSend });
+  } catch (error) {
+    return res.status(500).send({ error: "Internal server error" });
+  }
+};
+// is_order_complete halne############
+// completion anusar order haru herne#################
+// order ko completion change garne###################
 // order ko bill issue garne
-// eauta table ko orders herne
+// eauta table ko orders herne############
 // eauta staff ko orders herne
 // eauta customer ko herne
 // homedelivery ko place gerne

@@ -22,6 +22,7 @@ app.use("/api", require("./routes/reservation"));
 app.use("/api", require("./routes/order"));
 app.use("/api", require("./routes/food"));
 app.use("/api", require("./routes/menu"));
+app.use("/api", require("./routes/bill"));
 app.listen(port, () => {
   console.log(`Server listening at post ${port}`);
 });

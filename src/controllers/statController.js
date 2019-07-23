@@ -47,3 +47,42 @@ exports.getImportStatsByImportType = async (req, res) => {
     return res.status({ error });
   }
 };
+exports.getBillStats = async (req, res) => {
+  console.log(req.query);
+  const { year, month, day } = req.query;
+  try {
+    if (year && month && day) {
+      const total = await pool.query(
+        "SELECT COALESCE(SUM(total_price),0) AS bill_amount, COUNT(bill_no) AS total_bill_issued FROM bill WHERE YEAR(issue_date)=? AND MONTH(issue_date)=? AND DAY(issue_date)=?",
+        [year, month, day]
+      );
+      return res.send(...total);
+    }
+    if (year && month) {
+      const total = await pool.query(
+        "SELECT COALESCE(SUM(total_price),0) AS bill_amount, COUNT(bill_no) AS total_bill_issued FROM bill WHERE YEAR(issue_date)=? AND MONTH(issue_date)=?",
+        [year, month]
+      );
+      return res.send(...total);
+    }
+    if (year) {
+      const total = await pool.query(
+        "SELECT COALESCE(SUM(total_price),0) AS bill_amount, COUNT(bill_no) AS total_bill_issued FROM bill WHERE YEAR(issue_date)=?",
+        [year]
+      );
+      return res.send(...total);
+    }
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+};
+exports.getSalesReport = async (req, res) => {
+  try {
+    const totalSales = await pool.query(
+      "SELECT COALESCE(SUM(total_price),0) AS total_sales FROM bill"
+    );
+    return res.send({ sales: totalSales[0] });
+  } catch (error) {
+    return res.status(500).send({ error });
+  }
+};

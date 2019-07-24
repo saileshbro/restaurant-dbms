@@ -14,8 +14,8 @@ module.exports.createBill = async (req, res) => {
         );
         const insertbill = await pool.query(
 
-            `INSERT INTO bill SET bill_no=?,issue_date=?,order_id=?,total_price=?`,
-            [bill_no, issue_date, order_id, total_price.total_price]
+            `INSERT INTO bill SET bill_no=?,order_id=?,total_price=?`,
+            [bill_no, order_id, total_price.total_price]
         );
         console.log(insertbill);
         if (insertbill.affectedRows == 1) {

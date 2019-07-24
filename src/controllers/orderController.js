@@ -330,22 +330,3 @@ exports.getCustomerOrders = async (req, res) => {
   );
   return res.send(orderIds);
 };
-// is_order_complete halne############
-// completion anusar order haru herne#################
-// order ko completion change garne###################
-// order ko bill issue garne####################33
-// eauta table ko orders herne############
-// eauta staff ko orders herne#############
-// eauta customer ko herne*********
-// homedelivery ko place gerne************
-// order ko bill banaune**************
-// home delivery ko ni bill banaune****************
-// time anusar order nikalne####################333
-// eauta kunai order ma aaru items halney###################
-// isfoodavailable change garne menu bata##################
-
-// get total bill amounts date anusar
-// get total items sold date anusar#################33
-// get total profit date anusar#####################
-// kk besi sell vaira cha tyo######################
-// SELECT DISTINCT order_id,order_time,table_no from order_item inner join order_relates_table using (order_id) inner join food_order using(order_id) WHERE is_order_complete=?

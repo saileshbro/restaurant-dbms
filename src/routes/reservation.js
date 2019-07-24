@@ -16,7 +16,7 @@ router.get(
   reservationController.getReservationByTable
 );
 
-router.patch("/reservation", reservationController.updateReservation);
+router.patch("/reservation/:", reservationController.updateReservation);
 router.delete("/reservation", reservationController.deleteReservation);
 
 router.get("/reservationPage/:customer_id", (req, res) => {

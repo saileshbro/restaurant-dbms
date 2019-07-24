@@ -4,6 +4,13 @@ const { generateId } = require("../functions/id");
 module.exports.addReservation = async (req, res) => {
   const { no_of_person, reserved_for_date, reserved_for_time } = req.body;
   const { customer_id } = req.params;
+  const hasReservation = await pool.query(
+    "SELECT * FROM reservation WHERE customer_id=? AND reservation_fulfilled_status=?",
+    [customer_id, 0]
+  );
+  if (hasReservation.length > 0) {
+    return res.status(500).send({ error: "Customer already has reservation" });
+  }
   const table_no = await pool.query(
     "SELECT table_no from restaurant_table where is_empty=1 limit 1"
   );
@@ -24,6 +31,10 @@ module.exports.addReservation = async (req, res) => {
     );
     console.log(insertreservation);
     if (insertreservation.affectedRows == 1) {
+      await pool.query(
+        "UPDATE restaurant_table SET is_empty=? WHERE table_no=?",
+        [0, parseInt(table_no[0].table_no)]
+      );
       return res.send({ message: "Reservation successfully added." });
     } else {
       return res.status(400).send({ error: "Unable to add reservation." });
@@ -55,16 +66,16 @@ module.exports.getReservations = async (req, res) => {
 
 module.exports.getReservation = async (req, res) => {
   const { reserved_for_date } = req.params;
-  console.log(req.params);
+
   try {
     const result = await pool.query(
-      `SELECT customer_id,name,phone,email,address,reservation_date,reserved_for_time,table_no,number_of_person FROM reservation INNER JOIN users ON reservation.customer_id= users.user_id INNER JOIN contact_info ON users.user_id= contact_info.contact_info_id where reserved_for_date =?`,
+      `SELECT name,phone,email,address,reservation_date,customer_id,reserved_for_time,table_no,number_of_person FROM reservation INNER JOIN users ON reservation.customer_id= users.user_id INNER JOIN contact_info ON users.user_id= contact_info.contact_info_id where DATE(reserved_for_date)=?`,
       [reserved_for_date]
     );
     if (!result) {
       return res.status(404).json({ error: "Couldn't get reservation." });
     }
-    return res.send(result);
+    return res.send({ reservations: result });
   } catch (error) {
     return res.send({ error });
   }
@@ -96,7 +107,7 @@ module.exports.getReservationByTable = async (req, res) => {
     if (!result) {
       return res.status(404).json({ error: "Couldn't get reservation." });
     }
-    return res.send(result);
+    return res.send({ reservations: result });
   } catch (error) {
     return res.send({ error: "Internal Server error." });
   }

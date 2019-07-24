@@ -81,7 +81,7 @@ module.exports.getBillByDate = async (req, res) => {
     }
     try {
         const getBill = await pool.query(
-            "SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE bill_no=? ",
+            "SELECT bill_no,issue_date,order_id,total_price FROM bill WHERE issue_date=? ",
             [issue_date]
         );
         if (getBill.affectedRows != 0) {

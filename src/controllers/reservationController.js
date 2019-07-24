@@ -1,5 +1,4 @@
 const pool = require("../database/database");
-const { generateId } = require("../functions/id");
 
 module.exports.addReservation = async (req, res) => {
   const { no_of_person, reserved_for_date, reserved_for_time } = req.body;

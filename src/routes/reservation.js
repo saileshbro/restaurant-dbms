@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const { contactValidator } = require("../middlewares/contactvalidator");
 const reservationController = require("../controllers/reservationController");
 router.post("/reservation/:customer_id", reservationController.addReservation);
 router.get("/reservations", reservationController.getReservations);

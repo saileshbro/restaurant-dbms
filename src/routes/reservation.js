@@ -30,8 +30,10 @@ router.delete(
 
 
 router.get("/reservationPage/:customer_id", (req, res) => {
-    id = req.params.customer_id;
+    id = { the_id: req.params.customer_id };
     res.render("./reservation.ejs", id);
 })
+
+
 
 module.exports = router;

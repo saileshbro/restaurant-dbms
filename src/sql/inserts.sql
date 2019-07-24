@@ -399,19 +399,19 @@ insert into menu
 values('Lhosar Special','2014-08-01','2014-09-1',false);
 insert into menu
     (menu_name,menu_start_date,menu_end_date)
-values('Dinner Set','2015-07-19','2015-08-08',false);
+values('Dinner Set','2015-07-19','2015-08-08');
 insert into menu
     (menu_name,menu_start_date,menu_end_date)
-values('Coffee Special','2016-08-21','2016-09-18',false);
+values('Coffee Special','2016-08-21','2016-09-18');
 insert into menu
     (menu_name,menu_start_date,menu_end_date)
-values('Indian Set','2017-09-25','2017-09-28',false);
+values('Indian Set','2017-09-25','2017-09-28');
 insert into menu
     (menu_name,menu_start_date,menu_end_date)
-values('Chinese Special','2018-11-21','2018-12-03',false);
+values('Chinese Special','2018-11-21','2018-12-03');
 insert into menu
     (menu_name,menu_start_date,menu_end_date)
-values('Tihar Special','2019-12-01','2019-12-18',true);
+values('Tihar Special','2019-12-01','2019-12-18');
 
 --insert in menu_content
 insert into menu_content

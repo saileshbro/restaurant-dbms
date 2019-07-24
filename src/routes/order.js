@@ -17,4 +17,8 @@ router.get("/orders/table/:table_no", orderController.getTableOrders);
 router.get("/orders/staff/:staff_id", orderController.getOrdersByStaff);
 router.get("/orders/customer/:customer_id", orderController.getCustomerOrders);
 router.delete("/order/:order_id", orderController.deleteOrder);
+
+
+router.get("/orders/homemenu/:customer_id", orderController.getHomeMenu);
+
 module.exports = router;

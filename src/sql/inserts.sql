@@ -382,7 +382,7 @@ insert into food_item
 values('Banana Boat', 270,"Dessert");
 insert into food_item
     (food_item_name,food_item_price,food_category_name)
-values('Profiteroles', 210,"Dessert");
+values('Profitroles', 210,"Dessert");
 insert into food_item
     (food_item_name,food_item_price,food_category_name)
 values('Curd and Pavlova', 250,"Dessert");

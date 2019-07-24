@@ -5,4 +5,7 @@ router.get("/stats/import/good", statController.getImportStatsByImportGood);
 router.get("/stats/import/type", statController.getImportStatsByImportType);
 router.get("/stats/bill", statController.getBillStats);
 router.get("/stats/report", statController.getSalesReport);
+router.get("/stats/sales/totalItemsSold", statController.getTotalItemsSold);
+router.get("/stats/sales/totalProfit", statController.getTotalProfit);
+router.get("/stats/sales/maximumSales", statController.getMaximumSales);
 module.exports = router;

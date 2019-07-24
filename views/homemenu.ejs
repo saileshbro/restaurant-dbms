@@ -188,7 +188,7 @@
             console.log(list);
             $.ajax({
                 method: 'POST',
-                url: "http://localhost:8000/api/orders/homeDelivery/CUST63896656160",
+                url: "http://localhost:8000/api/orders/homeDelivery/<%= data.id.the_id %>",
                 data: {
                     order_items: list
                 },

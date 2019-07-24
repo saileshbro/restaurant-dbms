@@ -12,10 +12,10 @@ module.exports.createBill = async (req, res) => {
             "SELECT COALESCE(SUM(food_item.food_item_price),0) as total_price from food_item INNER JOIN order_item ON food_item.food_item_name=order_item.food_item_name where order_item.order_id=?",
             [order_id]
         );
-        console.log(total_price);
         const insertbill = await pool.query(
+
             `INSERT INTO bill SET bill_no=?,issue_date=?,order_id=?,total_price=?`,
-            [bill_no, issue_date, order_id, total_price]
+            [bill_no, issue_date, order_id, total_price.total_price]
         );
         console.log(insertbill);
         if (insertbill.affectedRows == 1) {

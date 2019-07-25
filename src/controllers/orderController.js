@@ -41,7 +41,10 @@ exports.showOrders = async (req, res) => {
       );
       toSend.push({ order_id, order_time, home_delivery_no, orders: result });
     }
-    return res.send({ orders: toSend });
+    data = { orders: toSend };
+    //return res.send({ orders: toSend });
+    console.log(data.orders[0].orders[0].food_item_name);
+    res.render("./showorders.ejs", data);
   } catch (error) {
     return res.status(500).send({ error });
   }
@@ -118,9 +121,11 @@ exports.getTableOrders = async (req, res) => {
   }
 };
 
-exports.placeHomeDelivery = async (req, res) => {
+module.exports.placeHomeDelivery = async (req, res) => {
   const { customer_id } = req.params;
   const { order_items } = req.body;
+  console.log(order_items);
+  // console.log(req.body);
   const order_id = generateId("ORD");
   const home_delivery_no = generateId("HD");
   try {
@@ -138,7 +143,7 @@ exports.placeHomeDelivery = async (req, res) => {
           console.log(order_items[i]);
           await pool.query(
             "INSERT INTO order_item SET order_id=?,food_item_name=?,quantity=?",
-            [order_id, order_items[i].food_item_name, order_items[i].quantity]
+            [order_id, order_items[i].name, order_items[i].count]
           );
         }
         const insertInRelation = await pool.query(
@@ -146,6 +151,7 @@ exports.placeHomeDelivery = async (req, res) => {
           [order_id, home_delivery_no]
         );
         if (insertInRelation.affectedRows != 0) {
+
           return res.send({ message: "Home Delivery successfully placed." });
         } else {
           return res
@@ -330,3 +336,39 @@ exports.getCustomerOrders = async (req, res) => {
   );
   return res.send(orderIds);
 };
+// is_order_complete halne############
+// completion anusar order haru herne#################
+// order ko completion change garne###################
+// order ko bill issue garne####################33
+// eauta table ko orders herne############
+// eauta staff ko orders herne#############
+// eauta customer ko herne*********
+// homedelivery ko place gerne************
+// time anusar order nikalne####################333
+// order ko bill banaune**************
+// home delivery ko ni bill banaune****************
+// eauta kunai order ma aaru items halney###################
+// isfoodavailable change garne menu bata##################
+
+// get total bill amounts date anusar
+// get total items sold date anusar
+// get total profit date anusar
+// kk besi sell vaira cha tyo
+// SELECT DISTINCT order_id,order_time,table_no from order_item inner join order_relates_table using (order_id) inner join food_order using(order_id) WHERE is_order_complete=?
+
+
+exports.getHomeMenu = (req, res) => {
+  cid = { the_id: req.params.customer_id };
+  pool.query("SELECT * FROM `food_item` WHERE food_category_name = 'Breakfast' ", (error, foodresult) => {
+    if (error) throw error;
+
+    data = { food: foodresult, id: cid }
+
+    data.food.forEach(element => {
+      element.food_item_count = 0;
+    });
+
+    res.render("./homemenu.ejs", data);
+  });
+
+}

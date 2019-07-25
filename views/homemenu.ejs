@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <style>
         h1 {
             text-align: center;
@@ -69,346 +73,136 @@
             border-radius: 13px;
 
         }
+
+        input[type=button],
+        input[type=number],
+        input[type=reset],
+        input[type=submit],
+        select {
+            width: 30%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        body {
+            text-align: center;
+        }
     </style>
     <title>Home Order Page</title>
 </head>
 
 <body style="background-color: rgb(240, 255, 254)">
     <h1><u>Make Orders:</u></h1>
-    <div class="boxy">
+    <form onsubmit="order(); return false;">
+        <h4>Breakfast Menu</h4>
+        <div class="boxy">
+            <div class="order-box">
+                <h4 align='center'>Breakfast Menu</h4>
+                <div class="row">
+                    <div class="col-9">
+                        <div class="row justify-content-between">
+                            <div class="col-8">
+                                <h6>Menu</h6>
+                            </div>
+                            <div class="col-2">
+                                <span>Select</span>
+                            </div>
+                            <div class="col-2">
+                                <h6>Price</h6>
+                            </div>
 
+                        </div>
+                        <hr>
 
-        <div class="order-box">
-            <h4 align='center'>Dinner Menu</h4>
-            <div class="row">
-                <div class="col-9">
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Menu</h6>
-                        </div>
-                        <div class="col-2">
-                            <span>Select</span>
-                        </div>
-                        <div class="col-2">
-                            <h6>Price</h6>
-                        </div>
+                        <%for(var i=0; i < data.food.length; i++){%>
 
-                    </div>
-                    <hr>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Chinese Mushroom Set</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>180</h6>
-                        </div>
+                        <div class="row justify-content-between food-items">
+                            <div class="col-8">
+                                <h6 id="itemName"> <%=data.food[i].food_item_name%></h6>
+                            </div>
+                            <div class="col-2">
+                                <span>
+                                    <i class="fa fa-plus-circle"
+                                        onclick="addProduct('<%=data.food[i].food_item_name%>')"
+                                        style="color:rgba(35, 200, 38, 0.849)"></i>
 
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Steam Rice</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 1 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>150</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>plain Fried Rice</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>220</h6>
+                                    &nbsp;
+                                    <span class="itemCount"
+                                        id="food-item-<%=data.food[i].food_item_name%>"><%=data.food[i].food_item_count%></span>
+                                    &nbsp;
+                                    <i class="fa fa-minus-circle"
+                                        onclick="removeProduct('<%=data.food[i].food_item_name%>')"
+                                        style="color:chocolate"></i>
+                                </span>
+                            </div>
+                            <div class="col-2">
+                                <h6 id="itemPrice"> <%=data.food[i].food_item_price%></h6>
+                            </div>
                         </div>
 
+                        <%}%>
+    
                     </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Thakali Set</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 1 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>250</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Mushroom Rice Set</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>240</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Chinese Rice Set</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>270</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Fish Rice Set</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>230</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Roti</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>100</h6>
-                        </div>
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Paratha</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>100</h6>
-                        </div>
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Shrimp Rice</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>270</h6>
-                        </div>
-                    </div>
+    
                 </div>
-
+                <hr>
             </div>
-            <hr>
+
         </div>
 
 
+        <input type="submit" value="Order Food"> <br> <br>
 
-    </div>
+        <input type="Reset"> <br>
+    </form>
+    <form>
+        <input type="button" value="Go back!" onclick="history.back()">
+    </form>
 
+    <script>
+        function addProduct(foodItemName) {
+            document.getElementById('food-item-' + foodItemName).innerHTML = parseInt(document.getElementById('food-item-' + foodItemName).innerHTML) + 1;
+        }
 
+        function removeProduct(foodItemName) {
+            if (parseInt(document.getElementById('food-item-' + foodItemName).innerHTML) > 0) {
+                document.getElementById('food-item-' + foodItemName).innerHTML = parseInt(document.getElementById('food-item-' + foodItemName).innerHTML) - 1;
+            }
+        }
 
+        function order() {
+            var foodItems = document.getElementsByClassName('food-items');
+            var list = [];
+            for (let i = 0; i < foodItems.length; i++) {
+                let dat = {
+                    name: foodItems[i].querySelector("#itemName").innerText,
+                    count: foodItems[i].querySelector(".itemCount").innerText
+                }
+                list.push(dat);
+            }
+            list = list.filter(ele => ele.count != 0);
+            console.log(list);
+            $.ajax({
+                method: 'POST',
+                url: "http://localhost:8000/api/orders/homeDelivery/<%= data.id.the_id %>",
+                data: {
+                    order_items: list
+                },
+                success: (data) => {
+                    console.log(data);
+                },
+                error: (error) => {
+                    console.log(error);
+                }
+            });
 
+        }
 
-
-
-
-    </div> <br><br>
-
-
-    <div class="boxy">
-
-
-        <div class="order-box">
-            <h4 align='center'>Breakfast Menu</h4>
-            <div class="row">
-                <div class="col-9">
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Menu</h6>
-                        </div>
-                        <div class="col-2">
-                            <span>Select</span>
-                        </div>
-                        <div class="col-2">
-                            <h6>Price</h6>
-                        </div>
-
-                    </div>
-                    <hr>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Cheese cake</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>180</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Apple Pie</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 1 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>150</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Omellete</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>220</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Vanilla Sugar</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 1 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>250</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Mushroom Rice Set</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>240</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Chinese Rice Set</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>270</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Fish Rice Set</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>230</h6>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Roti</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>100</h6>
-                        </div>
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Paratha</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>100</h6>
-                        </div>
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col-8">
-                            <h6>Shrimp Rice</h6>
-                        </div>
-                        <div class="col-2">
-                            <span><i class="fa fa-plus-circle" style="color:rgba(35, 200, 38, 0.849)"></i>
-                                &nbsp; 0 &nbsp; <i class="fa fa-minus-circle" style="color:chocolate"></i></span>
-                        </div>
-                        <div class="col-2">
-                            <h6>270</h6>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <hr>
-        </div>
-
-
-
-    </div>
-
-
-
-
-
-
-
-
-    </div>
-
-
+    </script>
 
 </body>
 

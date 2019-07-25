@@ -19,8 +19,8 @@ router.patch("/reservation/:", reservationController.updateReservation);
 router.delete("/reservation", reservationController.deleteReservation);
 
 router.get("/reservationPage/:customer_id", (req, res) => {
-  const id = req.params.customer_id;
-  res.render("./reservation.ejs", id);
-});
 
+  id = { the_id: req.params.customer_id };
+  res.render("./reservation.ejs", id);
+})
 module.exports = router;

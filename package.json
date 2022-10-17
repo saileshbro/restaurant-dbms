@@ -31,7 +31,7 @@
     "express-validator": "^6.14.2",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
-    "util": "^0.12.4",
+    "util": "^0.12.5",
     "validator": "^13.7.0"
   },
   "devDependencies": {

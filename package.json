@@ -32,7 +32,7 @@
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.1.0",
     "util": "^0.12.5",
-    "validator": "^13.7.0"
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "eslint": "^8.33.0",

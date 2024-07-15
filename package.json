@@ -30,7 +30,7 @@
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.10.2",
+    "mysql2": "^3.10.3",
     "util": "^0.12.5",
     "validator": "^13.12.0"
   },

@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/saileshbro/restaurant-dbms#readme",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.1",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
